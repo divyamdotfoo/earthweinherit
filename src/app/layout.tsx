@@ -11,6 +11,10 @@ export const metadata: Metadata = {
   description: "AI rich tool to help you find answers for climate change.",
 };
 
+export const viewport = {
+  maximumScale: 1, // Disable auto-zoom on mobile Safari
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{

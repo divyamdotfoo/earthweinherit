@@ -37,8 +37,9 @@ const generateSummaryForImage = async (
 
     return {
       pageContent: res.content,
-      metaData: {
+      metadata: {
         img: `${baseUrl}${imageName}`,
+        type: "image",
       },
     };
   } catch (error) {
