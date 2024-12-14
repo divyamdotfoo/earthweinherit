@@ -37,12 +37,10 @@ export async function createChat({
   user: string;
 }) {
   try {
-    const { data, error } = await supa
-      .from("chat")
-      .insert({ id, title, userid: user });
-    if (error) throw new Error();
+    await supa.from("chat").insert({ id, title, userid: user });
   } catch (err) {
     console.error("DB fails, when creating new chat");
+    console.log(err);
     throw err;
   }
 }

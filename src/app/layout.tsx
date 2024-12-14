@@ -6,9 +6,10 @@ const inter = Inter({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700", "800"],
 });
+
 export const metadata: Metadata = {
-  title: "IPCC AI",
-  description: "AI rich tool to help you find answers for climate change.",
+  title: "Earth We Inherit",
+  description: "Solving climate crisis with AI.",
 };
 
 export const viewport = {
@@ -21,7 +22,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark">
+    <html lang="en">
       <body className={`${inter.className} antialiased`}>{children}</body>
     </html>
   );

@@ -72,7 +72,7 @@ export const PreviewMessage = ({
             .map((s) => (
               <div
                 key={s.img}
-                className=" w-full min-h-[400px] mb-10 overflow-hidden bg-stone-600 relative rounded-md"
+                className=" w-full lg:min-h-96 sm:min-h-56 md:min-h-80 min-h-40 mb-10 overflow-hidden bg-stone-600 relative rounded-md"
               >
                 <ImageIcon className=" absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2" />
                 <Image

@@ -149,9 +149,9 @@ function ChatInput({
   return (
     <div
       className={cn(
-        "flex flex-col items-center gap-10 w-full   transition-all left-1/2 -translate-x-1/2 px-6 sm:px-10 max-w-4xl mx-auto absolute",
+        "flex flex-col items-center gap-10 w-full   transition-all left-1/2 -translate-x-1/2 px-0 sm:px-10 max-w-4xl mx-auto absolute",
         messages.length === 0
-          ? "bottom-1/2 translate-y-1/2 lg:translate-y-0"
+          ? "bottom-1/2 translate-y-1/2 lg:translate-y-0 px-6"
           : "bottom-0 "
       )}
     >

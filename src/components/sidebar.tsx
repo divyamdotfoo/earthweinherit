@@ -155,7 +155,7 @@ export function Sidebar({
       {/* mobile */}
 
       {!openSidebar && (
-        <div className=" fixed z-50 animate-fadeIn bg-transparent top-0 inset-x-0 md:hidden flex w-full justify-between p-4">
+        <div className=" fixed z-50 animate-fadeIn bg-neutral-900 top-0 inset-x-0 md:hidden flex w-full justify-between p-4">
           <button onClick={() => setSidebarOpen(true)}>
             <PanelLeft className=" w-5 h-5 text-white" />
           </button>
