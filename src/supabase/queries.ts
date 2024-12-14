@@ -8,7 +8,8 @@ export async function getChatsByUser(user: string) {
   const { data: chats, error } = await supa
     .from("chat")
     .select("*")
-    .eq("userid", user);
+    .eq("userid", user)
+    .order("createdat", { ascending: false });
   if (error) return [];
   return chats;
 }
@@ -76,10 +77,9 @@ export async function saveMessages(
   }[]
 ) {
   await supa.from("message").insert(messages);
-
 }
 
-export async function checkAndCreateUser(user: string | undefined) {
+export async function checkOrCreateUser(user: string | undefined) {
   if (user) return user;
   const userId = customAlphabet("ABCDEFGHIJKLMNOPQRSTUYWXYZ123456789", 10)(10);
 

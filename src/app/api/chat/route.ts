@@ -1,6 +1,6 @@
 import { supa } from "@/supabase/db";
 import {
-  checkAndCreateUser,
+  checkOrCreateUser,
   createChat,
   getChatById,
   saveMessages,
@@ -23,9 +23,10 @@ export async function POST(req: Request) {
 
     const cookiesStore = await cookies();
     const userCookie = cookiesStore.get("user");
-    const user = await checkAndCreateUser(userCookie?.value);
+    const user = await checkOrCreateUser(userCookie?.value);
+
     cookiesStore.set("user", user, {
-      expires: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000),
+      expires: new Date(Date.now() + 10 * 365 * 24 * 60 * 60 * 1000),
     });
 
     const coreMessages = convertToCoreMessages(messages);
@@ -78,14 +79,14 @@ export async function POST(req: Request) {
     const annotations = {
       sources: vectorSearchResult
         ? vectorSearchResult?.map((v) => ({
-          report: v.report_name,
-          url: v.report_url,
-          img: v.img
-            ? prevAnnotationsSourceImages.has(v.img)
-              ? null
-              : v.img
-            : null,
-        }))
+            report: v.report_name,
+            url: v.report_url,
+            img: v.img
+              ? prevAnnotationsSourceImages.has(v.img)
+                ? null
+                : v.img
+              : null,
+          }))
         : [],
     };
     let temp = "";

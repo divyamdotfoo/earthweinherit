@@ -9,10 +9,10 @@ import { cn } from "@/lib/utils";
 import { usePathname } from "next/navigation";
 
 export function Chat({
-  id = crypto.randomUUID(),
+  id,
   initialMessages,
 }: {
-  id?: string;
+  id: string;
   initialMessages: Array<Message>;
 }) {
   const { mutate } = useSWRConfig();
@@ -52,13 +52,13 @@ export function Chat({
     [id]
   );
   return (
-    <div className=" relative w-full bg-neutral-900/70 ">
-      <div className="w-full h-dvh overflow-y-scroll px-10">
+    <div className=" relative w-full bg-neutral-900/70">
+      <div className="w-full h-dvh overflow-y-scroll sm:px-10 px-6">
         <div
           // ref={messagesContainerRef}
           className={cn(
             "flex flex-col min-w-0 max-w-[700px] mx-auto gap-6 animate-jumpIn",
-            messages.length === 0 ? "" : "pt-10 pb-40 flex-1"
+            messages.length === 0 ? "" : "md:pt-10 pt-24 pb-40 flex-1"
           )}
         >
           {messages.map((message, index) => (
@@ -149,12 +149,14 @@ function ChatInput({
   return (
     <div
       className={cn(
-        "flex flex-col items-center gap-10 w-full transition-all left-1/2 -translate-x-1/2 px-10 max-w-4xl mx-auto absolute",
-        messages.length === 0 ? " bottom-1/2" : "bottom-0 "
+        "flex flex-col items-center gap-10 w-full   transition-all left-1/2 -translate-x-1/2 px-6 sm:px-10 max-w-4xl mx-auto absolute",
+        messages.length === 0
+          ? "bottom-1/2 translate-y-1/2 lg:translate-y-0"
+          : "bottom-0 "
       )}
     >
       {messages.length === 0 && (
-        <h2 className=" text-3xl font-medium">What can I help with?</h2>
+        <h2 className="text-3xl font-medium">What can I help with?</h2>
       )}
 
       <div
@@ -170,7 +172,7 @@ function ChatInput({
           autoFocus
           placeholder="Ask anything about climate change"
           name="input-begin"
-          className=" bg-transparent block border-none  transition-all outline-none pt-4 m-0 focus:outline-none w-full resize-none min-h-[40px]"
+          className=" bg-transparent placeholder:text-sm md:placeholder:text-base block border-none  transition-all outline-none pt-4 m-0 focus:outline-none w-full resize-none min-h-[40px]"
           value={input}
           onChange={handleInputChange}
           onKeyDown={(e) => {
@@ -199,12 +201,12 @@ function ChatInput({
         )}
       </div>
       {messages.length === 0 && (
-        <div className=" w-full grid grid-cols-2 gap-4">
+        <div className=" w-full grid md:grid-cols-2 grid-cols-1 gap-4">
           {questions.map((q) => (
             <button
               key={q}
               onClick={() => sendUserMessage(q)}
-              className=" bg-secondary text-secondary-foreground text-start p-4 text-sm text-wrap hover:bg-secondary/90 rounded-md transition-all hover:shadow-md "
+              className=" bg-secondary text-secondary-foreground text-start md:p-4 py-4 px-2 md:text-sm text-xs  text-wrap hover:bg-secondary/90 rounded-md transition-all hover:shadow-md "
             >
               {q}
             </button>

@@ -1,4 +1,5 @@
 import { Chat } from "@/components/chat";
 export default async function Page() {
-  return <Chat initialMessages={[]} />;
+  const id = crypto.randomUUID();
+  return <Chat id={id} initialMessages={[]} />;
 }

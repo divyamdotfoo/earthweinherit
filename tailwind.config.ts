@@ -13,6 +13,8 @@ export default {
         mlg: "931px",
       },
       colors: {
+        "chat-sidebar": "var(--chat-sidebar)",
+        "chat-item": "var(--chat-item)",
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         card: {
