@@ -1,19 +1,48 @@
 "use client";
 import { ChatRequestOptions, CreateMessage, Message } from "ai";
 import { useChat } from "ai/react";
-import { Dispatch, SetStateAction, useEffect, useMemo, useRef } from "react";
+import {
+  Dispatch,
+  SetStateAction,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { useSWRConfig } from "swr";
 import { PreviewMessage, ThinkingMessage } from "./message";
-import { ArrowUp, StopCircleIcon } from "lucide-react";
+import {
+  ArrowUp,
+  ChevronDown,
+  LucideShare,
+  PanelRightClose,
+  PenBoxIcon,
+  StopCircleIcon,
+  Trash2,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { ToolTip } from "./ui/tooltip";
+import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogTitle,
+  DialogTrigger,
+} from "./ui/dialog";
+import { deleteChat, getChatById } from "@/actions";
+import { useSidebarMobile } from "./sidebar";
+import Link from "next/link";
 
 export function Chat({
   id,
   initialMessages,
+  title,
 }: {
   id: string;
   initialMessages: Array<Message>;
+  title?: string;
 }) {
   const { mutate } = useSWRConfig();
 
@@ -40,6 +69,7 @@ export function Chat({
     if (pathname === "/chat") setMessages([]);
   }, [pathname]);
 
+  const router = useRouter();
   // const [messagesContainerRef, messagesEndRef] =
   //   useScrollToBottom<HTMLDivElement>();
   const questions = useMemo(
@@ -51,14 +81,36 @@ export function Chat({
     ],
     [id]
   );
+
+  const { isSheetOpen, setSheetOpen } = useSidebarMobile();
   return (
-    <div className=" relative w-full bg-neutral-900/70">
-      <div className="w-full h-dvh overflow-y-scroll sm:px-10 px-6">
+    <div className=" relative w-full">
+      <div className="w-full h-dvh overflow-y-scroll sm:px-10 px-5">
+        <div className=" flex items-center justify-between pt-3 ">
+          <button
+            onClick={() => setSheetOpen(true)}
+            className=" bg-accent text-accent-foreground p-1 rounded-md md:hidden"
+          >
+            <PanelRightClose className=" w-5 h-5" />
+          </button>
+          <ChatTitle id={id} title={title} />
+          <ToolTip content="New chat">
+            <button
+              onClick={() => {
+                router.push("/chat");
+                router.refresh();
+              }}
+              className=" bg-primary md:hidden text-primary-foreground rounded-md p-1 flex items-center justify-center"
+            >
+              <PenBoxIcon className=" w-4 h-4 text-inherit stroke-[1.5px]" />
+            </button>
+          </ToolTip>
+        </div>
         <div
           // ref={messagesContainerRef}
           className={cn(
             "flex flex-col min-w-0 max-w-[700px] mx-auto gap-6 animate-jumpIn",
-            messages.length === 0 ? "" : "md:pt-10 pt-24 pb-40 flex-1"
+            messages.length === 0 ? "" : "pt-10 pb-40 flex-1"
           )}
         >
           {messages.map((message, index) => (
@@ -149,22 +201,24 @@ function ChatInput({
   return (
     <div
       className={cn(
-        "flex flex-col items-center gap-10 w-full   transition-all left-1/2 -translate-x-1/2 px-0 sm:px-10 max-w-4xl mx-auto absolute",
+        "flex flex-col items-center gap-10 w-full  transition-all left-1/2 -translate-x-1/2  max-w-[840px] mx-auto absolute",
         messages.length === 0
-          ? "bottom-1/2 translate-y-1/2 lg:translate-y-0 px-6"
-          : "bottom-0 "
+          ? "bottom-1/2 translate-y-1/2 lg:translate-y-1/3 px-5 sm:px-10 "
+          : "bottom-0 px-0 sm:px-10"
       )}
     >
       {messages.length === 0 && (
-        <h2 className="text-3xl font-medium">What can I help with?</h2>
+        <h2 className=" text-2xl sm:text-3xl font-medium font-mono">
+          What can I help with?
+        </h2>
       )}
 
       <div
         className={cn(
-          "bg-secondary items-center flex flex-col transition-all pb-2 shadow-sm px-4  w-full max-h-52",
+          " bg-accent border border-border items-center flex flex-col transition-all pb-2 px-4  w-full max-h-52",
           messages.length === 0
             ? "rounded-xl"
-            : " rounded-t-xl shadow-sm border-gray-700 border border-b-0"
+            : " rounded-t-xl shadow-sm border-b-0"
         )}
       >
         <textarea
@@ -172,7 +226,7 @@ function ChatInput({
           autoFocus
           placeholder="Ask anything about climate change"
           name="input-begin"
-          className=" bg-transparent placeholder:text-sm md:placeholder:text-base block border-none  transition-all outline-none pt-4 m-0 focus:outline-none w-full resize-none min-h-[40px]"
+          className=" bg-transparent font-mono placeholder:text-sm md:placeholder:text-base placeholder:font-mono block border-none  transition-all outline-none pt-4 m-0 focus:outline-none w-full resize-none min-h-[40px] placeholder:tracking-tighter"
           value={input}
           onChange={handleInputChange}
           onKeyDown={(e) => {
@@ -191,22 +245,24 @@ function ChatInput({
             <StopCircleIcon className=" w-5 h-5 text-inherit hover:stroke-[2.5px] " />
           </button>
         ) : (
-          <button
-            onClick={() => sendUserMessage()}
-            disabled={!input.length}
-            className="p-2 rounded-full w-fit self-end bg-black/20 disabled:opacity-50"
-          >
-            <ArrowUp className="w-5 h-5 stroke-[2.3px] text-inherit" />
-          </button>
+          <ToolTip content="Send">
+            <button
+              onClick={() => sendUserMessage()}
+              disabled={!input.length}
+              className="p-2 rounded-full bg-primary text-primary-foreground w-fit self-end disabled:opacity-50"
+            >
+              <ArrowUp className="w-5 h-5 stroke-[2.3px] text-inherit" />
+            </button>
+          </ToolTip>
         )}
       </div>
       {messages.length === 0 && (
-        <div className=" w-full grid md:grid-cols-2 grid-cols-1 gap-4">
+        <div className=" w-full grid md:grid-cols-2 grid-cols-1 gap-4 text-sm sm:text-base font-mono text-secondary-foreground font-medium">
           {questions.map((q) => (
             <button
               key={q}
               onClick={() => sendUserMessage(q)}
-              className=" bg-secondary text-secondary-foreground text-start md:p-4 py-4 px-2 md:text-sm text-xs  text-wrap hover:bg-secondary/90 rounded-md transition-all hover:shadow-md "
+              className=" border border-border hover:bg-accent md:p-4 py-4 px-2 text-wrap text-start rounded-md transition-all "
             >
               {q}
             </button>
@@ -214,5 +270,99 @@ function ChatInput({
         </div>
       )}
     </div>
+  );
+}
+
+function ChatTitle({ id, title }: { title?: string; id?: string }) {
+  const [chatTitle, setTitle] = useState(title ?? null);
+  const [chatId, setId] = useState(id ?? null);
+  const [deleteChatModal, setDeleteChatModal] = useState(false);
+  const router = useRouter();
+
+  const pathname = usePathname();
+
+  async function getChat(id: string) {
+    try {
+      const { data, error } = await getChatById(id);
+      console.log(data, error);
+      if (data && data.length) {
+        setTitle(data[0].title);
+        setId(data[0].id);
+      }
+    } catch (err) {}
+  }
+  useEffect(() => {
+    const id = pathname.split("/").at(-1);
+    if (id)
+      setTimeout(() => {
+        getChat(id);
+      }, 3000);
+  }, [pathname]);
+
+  const { mutate } = useSWRConfig();
+
+  if (chatId && chatTitle) {
+    return (
+      <Popover>
+        <PopoverTrigger className="flex items-center gap-2 hover:bg-muted md:px-2 py-1 tracking-tighter font-medium rounded-md text-sm">
+          <p className=" text-ellipsis text-nowrap whitespace-nowrap overflow-hidden w-48 sm:w-fit">
+            {chatTitle}
+          </p>
+          <ChevronDown className=" w-4 h-4" />
+        </PopoverTrigger>
+
+        <PopoverContent className=" flex flex-col max-w-28 bg-accent text-accent-foreground items-start p-0 font-medium text-sm">
+          <button className=" cursor-pointer w-full hover:bg-background p-2 transition-all text-start flex items-center gap-2">
+            <span>
+              <LucideShare className=" w-3 h-3" />
+            </span>
+            Share
+          </button>
+          <div className=" w-full bg-border h-[1px] opacity-60"></div>
+          <Dialog open={deleteChatModal} onOpenChange={setDeleteChatModal}>
+            <DialogTrigger asChild>
+              <button className=" w-full flex items-center gap-2 cursor-pointer hover:bg-background p-2 transition-all text-start">
+                <Trash2 className=" w-3 h-3" />
+                Delete
+              </button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogTitle>Delete chat?</DialogTitle>
+              <DialogDescription>
+                Are you sure you want to delete this chat?
+              </DialogDescription>
+
+              <div className=" pt-6 flex items-center justify-end gap-6">
+                <button
+                  className=" rounded-md px-4 py-2 text-white bg-stone-800 hover:bg-stone-700 transition-all"
+                  onClick={() => setDeleteChatModal(false)}
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={async () => {
+                    if (chatId) {
+                      setDeleteChatModal(false);
+                      router.push("/chat");
+                      router.refresh();
+                      await deleteChat(chatId);
+                      mutate("/api/history");
+                    }
+                  }}
+                  className=" px-4 py-2 rounded-md text-white bg-red-500 hover:bg-red-600 transition-all font-medium"
+                >
+                  Delete
+                </button>
+              </div>
+            </DialogContent>
+          </Dialog>
+        </PopoverContent>
+      </Popover>
+    );
+  }
+  return (
+    <h1 className=" md:hidden text-lg tracking-tighter font-bold">
+      <Link href={"/"}>Earth we Inherit</Link>
+    </h1>
   );
 }

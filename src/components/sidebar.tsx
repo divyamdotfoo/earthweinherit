@@ -1,43 +1,37 @@
 "use client";
 import {
-  ArrowLeftFromLine,
-  ArrowRightFromLine,
   Copy,
+  CopyCheck,
   Infinity,
-  PanelLeft,
-  PenBox,
-  PlusIcon,
-  Trash2Icon,
+  PanelLeftClose,
+  PanelRightClose,
+  PenBoxIcon,
 } from "lucide-react";
-import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
+import React, {
+  createContext,
+  Dispatch,
+  SetStateAction,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { cn } from "@/lib/utils";
 import useSWR from "swr";
 import { Chats } from "@/supabase/queries";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { toDataURL as QR } from "qrcode";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogTitle,
-  DialogTrigger,
-} from "./ui/dialog";
+import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "./ui/dialog";
 import Cookie from "js-cookie";
-import { deleteChat } from "@/actions";
+import { ToolTip } from "./ui/tooltip";
+import { Sheet, SheetContent, SheetDescription, SheetTitle } from "./ui/sheet";
 
-export function Sidebar({
-  fallbackChats,
-  isMobile,
-}: {
-  fallbackChats: Chats;
-  isMobile: boolean;
-}) {
-  const [openSidebar, setSidebarOpen] = useState(!isMobile);
+export function Sidebar({ fallbackChats }: { fallbackChats: Chats }) {
+  const [openSidebar, setSidebarOpen] = useState(true);
   const pathname = usePathname();
   const router = useRouter();
-  const [openDeleteChat, setOpenDeleteChat] = useState(false);
-  const [toDeleteChatId, setToDeleteChatId] = useState("");
+  const { isSheetOpen, setSheetOpen } = useSidebarMobile();
   const {
     data: chats,
     isLoading,
@@ -63,162 +57,164 @@ export function Sidebar({
 
   return (
     <>
-      {/* desktop */}
       <div
         className={cn(
-          "flex  absolute transition-all z-30  flex-col justify-between gap-20 duration-300 ease-out border-r border-border h-screen md:sticky top-0 overflow-y-auto bg-chat-sidebar  shrink-0 overflow-hidden",
+          "md:flex hidden absolute transition-all z-30  flex-col justify-between gap-20 duration-300 ease-out border-r border-border  h-screen md:sticky top-0 overflow-y-auto bg-secondary shrink-0 overflow-hidden",
           openSidebar
             ? "w-[280px] p-4"
             : "md:w-[90px] w-0 overflow-hidden p-0 md:p-4"
         )}
       >
         <div>
-          <div>
-            <div className=" flex items-center w-full justify-between pb-4">
-              <h1 className=" text-xl font-bold text-center">IPCC</h1>
-              {openSidebar && (
-                <button onClick={() => setSidebarOpen(false)}>
-                  <ArrowLeftFromLine className=" text-inherit w-5 h-5" />
+          <div
+            className={cn(
+              " flex items-center justify-between w-full",
+              openSidebar ? " flex-row" : " flex-col gap-4"
+            )}
+          >
+            {openSidebar ? (
+              <ToolTip content="Hide menu">
+                <button
+                  onClick={() => setSidebarOpen(false)}
+                  className=" bg-accent text-accent-foreground p-1 flex items-center justify-center rounded-md"
+                >
+                  <PanelLeftClose className=" w-5 h-5 text-inherit" />
                 </button>
-              )}
-            </div>
+              </ToolTip>
+            ) : (
+              <ToolTip content="Show menu">
+                <button
+                  onClick={() => setSidebarOpen(true)}
+                  className=" bg-accent text-accent-foreground p-1 flex items-center justify-center rounded-md"
+                >
+                  <PanelRightClose className=" w-6 h-6 text-inherit" />
+                </button>
+              </ToolTip>
+            )}
 
-            <button
-              onClick={() => {
-                router.push("/chat");
-                router.refresh();
-              }}
-              className={cn(
-                "flex items-center h-12 bg-background/20 hover:bg-background/30  rounded-md gap-3 p-2",
-                openSidebar
-                  ? " w-full rounded-md justify-start"
-                  : " w-12 rounded-full justify-center"
-              )}
-            >
-              <PlusIcon className=" text-inherit w-5 h-5" />
-              {openSidebar && (
-                <span className=" block animate-fadeIn">Start new chat</span>
-              )}
-            </button>
+            {openSidebar && (
+              <h1 className="font-bold tracking-tighter whitespace-nowrap">
+                Earth we Inherit
+              </h1>
+            )}
+            <ToolTip content="New chat">
+              <button
+                onClick={() => {
+                  router.push("/chat");
+                  router.refresh();
+                }}
+                className=" bg-primary text-primary-foreground rounded-md p-1 flex items-center justify-center"
+              >
+                <PenBoxIcon className=" w-4 h-4 text-inherit stroke-[1.5px]" />
+              </button>
+            </ToolTip>
           </div>
 
           {openSidebar ? (
             isLoading && chats.length === 0 ? (
-              <div className=" flex flex-col w-full py-6 gap-4">
+              <div className=" flex flex-col w-full py-10 gap-4">
                 {Array(5)
                   .fill(null)
                   .map((_, i) => (
                     <div
                       key={i}
-                      className=" w-64 rounded-md bg-stone-700 h-8 animate-pulse"
+                      className=" w-64 rounded-md bg-muted h-8 animate-pulse"
                     ></div>
                   ))}
               </div>
+            ) : chats.length === 0 ? (
+              <p className=" absolute top-1/2 w-full left-10 font-medium text-lg ">
+                No chats yet.
+              </p>
             ) : (
-              <div className=" flex flex-col items-center w-full gap-2 py-6">
+              <div className=" flex flex-col items-center w-full gap-2 py-10">
                 {chats.map((c) => (
-                  <ChatItem
-                    onClick={() => {
-                      if (isMobile) {
-                        console.log("mobile");
-                        setSidebarOpen(false);
-                      }
-                    }}
-                    chat={c}
-                    pathname={pathname}
+                  <Link
                     key={c.id}
-                    onDelete={() => {
-                      setOpenDeleteChat(true);
-                      setToDeleteChatId(c.id);
-                    }}
-                  />
+                    className={cn(
+                      "text-sm relative rounded-md transition-all w-64 text-ellipsis text-secondary-foreground font-mono font-medium px-2 py-1 block overflow-hidden whitespace-nowrap",
+                      pathname.split("/").at(-1) === c.id
+                        ? " bg-accent text-accent-foreground hover:opacity-90"
+                        : " hover:bg-accent hover:text-accent-foreground"
+                    )}
+                    href={`/chat/${c.id}`}
+                  >
+                    {c.title}
+                  </Link>
                 ))}
               </div>
             )
           ) : null}
         </div>
 
-        <div className=" flex flex-col items-center gap-3 w-full">
-          {!openSidebar && (
-            <button
-              onClick={() => setSidebarOpen(true)}
-              className=" p-4 rounded-full flex items-center justify-center bg-background/20"
-            >
-              <ArrowRightFromLine className=" text-inherit w-6 h-6 stroke-[2.4px]" />
-            </button>
-          )}
-
-          <SyncChats sidebarOpen={openSidebar} mutate={mutate} chats={chats} />
-        </div>
+        <SyncChats sidebarOpen={openSidebar} mutate={mutate} chats={chats} />
       </div>
 
       {/* mobile */}
-
-      {!openSidebar && (
-        <div className=" fixed z-50 animate-fadeIn bg-neutral-900 top-0 inset-x-0 md:hidden flex w-full justify-between p-4">
-          <button onClick={() => setSidebarOpen(true)}>
-            <PanelLeft className=" w-5 h-5 text-white" />
-          </button>
-          <h1 className=" text-xl font-semibold">IPCC</h1>
-          <button
-            onClick={() => {
-              router.push("/chat");
-              router.refresh();
-            }}
+      <Sheet open={isSheetOpen} onOpenChange={setSheetOpen}>
+        <SheetContent side={"left"} className=" bg-background p-3">
+          <SheetTitle
+            suppressHydrationWarning
+            asChild
+            className="font-bold tracking-tighter whitespace-nowrap underline"
           >
-            <PenBox className=" w-5 h-5 text-white" />
-          </button>
-        </div>
-      )}
+            <Link href={"/"}>Earth we Inherit</Link>
+          </SheetTitle>
+          <SheetDescription
+            suppressHydrationWarning
+            asChild
+            className=" sr-only"
+          >
+            Solving climate crisis with AI.
+          </SheetDescription>
 
-      <DeleteChatDialog
-        open={openDeleteChat}
-        onOpenChange={setOpenDeleteChat}
-        id={toDeleteChatId}
-        mutate={mutate}
-      />
+          <div className="flex h-[94%] flex-col justify-between items-start">
+            <div className=" overflow-y-auto">
+              {isLoading && chats.length === 0 ? (
+                <div className=" flex flex-col w-full py-10 gap-4">
+                  {Array(50)
+                    .fill(null)
+                    .map((_, i) => (
+                      <div
+                        key={i}
+                        className=" w-64 rounded-md bg-muted h-8 animate-pulse"
+                      ></div>
+                    ))}
+                </div>
+              ) : chats.length === 0 ? (
+                <p className=" absolute top-1/2 w-full left-10 font-medium text-lg ">
+                  No chats yet.
+                </p>
+              ) : (
+                <div className=" flex flex-col items-center w-full gap-2 py-6">
+                  <p className=" text-primary text-xs px-2 self-start">
+                    History
+                  </p>
+                  {chats.map((c) => (
+                    <button
+                      onClick={() => {
+                        setSheetOpen(false);
+                        router.push(`/chat/${c.id}`);
+                      }}
+                      key={c.id}
+                      className={cn(
+                        "text-sm relative rounded-md transition-all w-64 text-ellipsis text-secondary-foreground font-mono font-medium px-2 py-1 block overflow-hidden whitespace-nowrap",
+                        pathname.split("/").at(-1) === c.id
+                          ? " bg-accent text-accent-foreground hover:opacity-90"
+                          : " hover:bg-accent hover:text-accent-foreground"
+                      )}
+                    >
+                      {c.title}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+            <SyncChats chats={chats} mutate={mutate} sidebarOpen={true} />
+          </div>
+        </SheetContent>
+      </Sheet>
     </>
-  );
-}
-
-export function ChatItem({
-  chat,
-  pathname,
-  onDelete,
-  onClick,
-}: {
-  chat: Chats[0];
-  pathname: string;
-  onDelete: () => void;
-  onClick: () => void;
-}) {
-  const [isHover, setHover] = useState(false);
-  const isActive = pathname.split("/").at(-1) === chat.id;
-  return (
-    <div
-      className={cn(
-        "text-sm relative rounded-md transition-all w-64 ",
-        isActive ? " bg-chat-item hover:opacity-90" : " hover:bg-chat-item"
-      )}
-    >
-      <Link
-        onMouseOver={() => setHover(true)}
-        onMouseLeave={() => setHover(false)}
-        onClick={onClick}
-        className="text-ellipsis w-full p-2 block overflow-hidden whitespace-nowrap"
-        href={`/chat/${chat.id}`}
-      >
-        {chat.title}
-      </Link>
-      {(isHover || isActive) && (
-        <button
-          onClick={onDelete}
-          className=" absolute rounded-md right-0 top-1/2 -translate-y-1/2 bg-stone-700 text-white transition-all hover:text-red-500 p-2 flex items-center justify-center"
-        >
-          <Trash2Icon className=" w-4 h-4 text-inherit" />
-        </button>
-      )}
-    </div>
   );
 }
 
@@ -232,6 +228,7 @@ export function SyncChats({
   chats: Chats;
 }) {
   const [code, setCode] = useState<string | undefined>(undefined);
+  const [isCopied, setCopied] = useState(false);
   const [qr, setQr] = useState<string | null>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [isDialogOpen, setDialog] = useState(false);
@@ -272,11 +269,17 @@ export function SyncChats({
         ref={canvasRef}
       ></canvas>
 
-      <Dialog open={isDialogOpen} onOpenChange={setDialog}>
+      <Dialog
+        open={isDialogOpen}
+        onOpenChange={(z) => {
+          setDialog(z);
+          setCopied(false);
+        }}
+      >
         <DialogTrigger asChild>
           <button
             className={cn(
-              "flex items-center justify-center gap-2 h-12 bg-background/40 p-2 ",
+              "flex items-center justify-center gap-2 h-12 bg-accent text-accent-foreground p-2 ",
               sidebarOpen
                 ? " w-fit py-2 px-5 rounded-3xl"
                 : "w-12 p-2 rounded-full"
@@ -284,7 +287,7 @@ export function SyncChats({
           >
             <Infinity className=" w-6 h-6 text-inherit" />
             {sidebarOpen && (
-              <span className="font-medium animate-fadeIn">Sync chats</span>
+              <span className="font-medium whitespace-nowrap">Sync chats</span>
             )}
           </button>
         </DialogTrigger>
@@ -295,11 +298,17 @@ export function SyncChats({
               <div className="p-2 rounded-md bg-secondary w-full flex items-center justify-between">
                 <p className=" ">{code}</p>
                 <button
-                  onClick={() =>
-                    window.navigator.clipboard.writeText(code ?? "")
-                  }
+                  onClick={() => {
+                    setCopied(true);
+
+                    window.navigator.clipboard.writeText(code ?? "");
+                  }}
                 >
-                  <Copy className=" w-4 h-4 text-inherit" />
+                  {isCopied ? (
+                    <CopyCheck className=" w-4 h-4 text-primary" />
+                  ) : (
+                    <Copy className=" w-4 h-4 text-inherit" />
+                  )}
                 </button>
               </div>
               <img
@@ -313,7 +322,7 @@ export function SyncChats({
                 value={otherCode}
                 onChange={(e) => setOtherCode(e.target.value)}
                 spellCheck={false}
-                className=" bg-secondary w-full p-2 rounded-md placeholder:text-xs placeholder:font-medium"
+                className=" bg-accent text-accent-foreground font-sans focus:outline-none  ring-border focus:ring-2 w-full p-2 rounded-md placeholder:text-xs placeholder:font-medium"
                 placeholder="Enter code to sync this device with other"
               />
               <button
@@ -325,7 +334,7 @@ export function SyncChats({
                   router.refresh();
                   mutate();
                 }}
-                className=" w-full bg-white p-2 rounded-md text-black font-semibold"
+                className=" w-full bg-primary text-primary-foreground p-2 hover:opacity-95 transition-all rounded-md font-semibold"
               >
                 Sync
               </button>
@@ -341,44 +350,23 @@ export function SyncChats({
   );
 }
 
-export function DeleteChatDialog({
-  open,
-  onOpenChange,
-  id,
-  mutate,
-}: {
-  open: boolean;
-  onOpenChange: Dispatch<SetStateAction<boolean>>;
-  id: string;
-  mutate: () => void;
-}) {
-  return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent>
-        <DialogTitle>Delete chat?</DialogTitle>
-        <DialogDescription>
-          Are you sure you want to delete this chat?
-        </DialogDescription>
+type SidebarMobileContext = {
+  isSheetOpen: boolean;
+  setSheetOpen: Dispatch<SetStateAction<boolean>>;
+};
+const SidebarMobileContext = createContext<SidebarMobileContext | null>(null);
 
-        <div className=" pt-6 flex items-center justify-end gap-6">
-          <button
-            className=" rounded-md px-4 py-2 text-white bg-stone-800 hover:bg-stone-700 transition-all"
-            onClick={() => onOpenChange(false)}
-          >
-            Cancel
-          </button>
-          <button
-            onClick={async () => {
-              onOpenChange(false);
-              await deleteChat(id);
-              mutate();
-            }}
-            className=" px-4 py-2 rounded-md text-white bg-red-500 hover:bg-red-600 transition-all font-medium"
-          >
-            Delete
-          </button>
-        </div>
-      </DialogContent>
-    </Dialog>
+export function SidebarMobile({ children }: { children: React.ReactNode }) {
+  const [isSheetOpen, setSheetOpen] = useState(false);
+  return (
+    <SidebarMobileContext.Provider value={{ isSheetOpen, setSheetOpen }}>
+      {children}
+    </SidebarMobileContext.Provider>
   );
 }
+
+export const useSidebarMobile = () => {
+  const ctx = useContext(SidebarMobileContext);
+  if (!ctx) throw new Error("ctx error");
+  return ctx;
+};

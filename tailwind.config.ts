@@ -13,39 +13,22 @@ export default {
         mlg: "931px",
       },
       colors: {
-        "chat-sidebar": "var(--chat-sidebar)",
-        "chat-item": "var(--chat-item)",
-        background: "hsl(var(--background))",
-        foreground: "hsl(var(--foreground))",
-        card: {
-          DEFAULT: "hsl(var(--card))",
-          foreground: "hsl(var(--card-foreground))",
-        },
-        popover: {
-          DEFAULT: "hsl(var(--popover))",
-          foreground: "hsl(var(--popover-foreground))",
-        },
-        primary: {
-          DEFAULT: "hsl(var(--primary))",
-          foreground: "hsl(var(--primary-foreground))",
-        },
-        secondary: {
-          DEFAULT: "hsl(var(--secondary))",
-          foreground: "hsl(var(--secondary-foreground))",
-        },
-        muted: {
-          DEFAULT: "hsl(var(--muted))",
-          foreground: "hsl(var(--muted-foreground))",
-        },
-        accent: {
-          DEFAULT: "hsl(var(--accent))",
-          foreground: "hsl(var(--accent-foreground))",
-        },
-        destructive: {
-          DEFAULT: "hsl(var(--destructive))",
-          foreground: "hsl(var(--destructive-foreground))",
-        },
-        border: "hsl(var(--border))",
+        background: "var(--background)",
+        foreground: "var(--foreground)",
+        muted: "var(--muted)",
+        secondary: "var(--secondary)",
+        "secondary-foreground": "var(--secondary-foreground)",
+        primary: "var(--primary)",
+        "primary-foreground": "var(--primary-foreground)",
+        accent: "var(--accent)",
+        "accent-foreground": "var(--accent-foreground)",
+        popover: "var(--popover)",
+        "popover-foreground": "var(--popover-foreground)",
+        card: "var(--card)",
+        "card-foreground": "var(--card-foreground)",
+
+        border: "var(--border)",
+
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
         chart: {
@@ -75,6 +58,10 @@ export default {
       animation: {
         fadeIn: "fadeIn 0.4s ease-in forwards",
         jumpIn: "jumpIn 0.3s ease-out forwards",
+      },
+      fontFamily: {
+        sans: ["var(--font-geist-sans)"],
+        mono: ["var(--font-geist-mono)"],
       },
     },
   },

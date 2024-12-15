@@ -12,5 +12,5 @@ export default async function ChatIdPage({ params }: { params: any }) {
 
   const messages = await getMessagesByChatId(id);
 
-  return <Chat id={id} initialMessages={messages} />;
+  return <Chat id={id} initialMessages={messages} title={chat.title} />;
 }

@@ -22,7 +22,7 @@ export const PreviewMessage = ({
 }) => {
   if (message.role === "user")
     return (
-      <div className="text-white  self-start rounded-2xl shadow-sm bg-gray-600 w-fit p-3">
+      <div className=" to-muted bg-gradient-to-b from-secondary from-50% self-start font-mono rounded-2xl shadow-sm w-fit p-3 selection:bg-white selection:text-foreground">
         {message.content && (
           <div className="flex flex-col gap-4">
             <Markdown>{message.content as string}</Markdown>
@@ -39,11 +39,11 @@ export const PreviewMessage = ({
       (message.annotations[0]?.sources as MessageAnnotationSource);
 
     return (
-      <div className=" text-white self-start w-full">
+      <div className=" self-start w-full">
         {sources && (
           <div className=" pb-6">
-            <p className=" pb-4">Sources</p>
-            <div className=" flex items-stretch gap-3 ">
+            <p className=" pb-2 font-mono text-primary font-bold">Sources</p>
+            <div className=" flex items-stretch gap-3 flex-wrap">
               {filterUniqueBasedOn(
                 sources.filter((s) => s.url),
                 "url"
@@ -52,7 +52,7 @@ export const PreviewMessage = ({
                   href={s.url ?? ""}
                   key={s.url}
                   target="_blank"
-                  className="bg-stone-800 hover:bg-stone-700 transition-all max-w-48 text-pretty text-white p-2 rounded-lg shadow-sm"
+                  className=" bg-accent text-accent-foreground transition-all shrink-0 max-w-40 md:max-w-48 text-pretty font-mono p-2 rounded-lg border-[0.3px] border-border hover:shadow-sm"
                 >
                   <p className=" text-xs pb-2 font-medium">{s.report}</p>
                   <div className=" flex items-center gap-2">
@@ -72,7 +72,7 @@ export const PreviewMessage = ({
             .map((s) => (
               <div
                 key={s.img}
-                className=" w-full lg:min-h-96 sm:min-h-56 md:min-h-80 min-h-40 mb-10 overflow-hidden bg-stone-600 relative rounded-md"
+                className=" w-full sm:min-h-56 md:min-h-80 min-h-40 mb-10 overflow-hidden outline-none border-none bg-secondary relative rounded-md"
               >
                 <ImageIcon className=" absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2" />
                 <Image
@@ -87,7 +87,7 @@ export const PreviewMessage = ({
 
         <div className="flex flex-col gap-2 w-full">
           {message.content && (
-            <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-4 px-2 sm:px-0 selection:bg-primary selection:text-primary-foreground">
               <Markdown>{message.content as string}</Markdown>
             </div>
           )}
@@ -99,9 +99,14 @@ export const PreviewMessage = ({
 
 export const ThinkingMessage = () => {
   return (
-    <div className="flex items-center justify-center gap-2 animate-pulse self-start">
-      <SparklesIcon className=" text-white rounded-full w-7 h-7 p-1 stroke-[1.3px] bg-stone-600" />
-      <p className="text-sm ">Thinking...</p>
+    <div className="flex items-center justify-center gap-2 self-start">
+      <SparklesIcon className=" text-white rounded-full w-7 h-7 p-1 stroke-[1.3px] bg-primary" />
+      <div className=" flex items-center">
+        <p className="text-sm pr-1">Thinking</p>
+        <p className=" font-bold animate-bounce">.</p>
+        <p className=" font-bold animate-bounce delay-100">.</p>
+        <p className=" font-bold animate-bounce delay-150">.</p>
+      </div>
     </div>
   );
 };

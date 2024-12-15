@@ -1,6 +1,6 @@
-import { Sidebar } from "@/components/sidebar";
+import { Sidebar, SidebarMobile } from "@/components/sidebar";
 import { Suspense } from "react";
-import { cookies, headers } from "next/headers";
+import { cookies } from "next/headers";
 import { Chats, getChatsByUser } from "@/supabase/queries";
 export default async function ChatLayout({
   children,
@@ -8,7 +8,6 @@ export default async function ChatLayout({
   children: React.ReactNode;
 }) {
   const cookieStore = await cookies();
-  const headerList = await headers();
   const user = cookieStore.get("user");
   let fallbackChatItems: Chats = [];
   if (user?.value) {
@@ -18,14 +17,14 @@ export default async function ChatLayout({
     }
   }
 
-  const userAgent = headerList.get("user-agent") ?? "";
-  const isMobile = /Mobi|Android/i.test(userAgent);
   return (
-    <div className="md:flex w-full items-start">
-      <Suspense>
-        <Sidebar isMobile={isMobile} fallbackChats={fallbackChatItems} />
-      </Suspense>
-      {children}
-    </div>
+    <SidebarMobile>
+      <div className="md:flex w-full items-start">
+        <Suspense>
+          <Sidebar fallbackChats={fallbackChatItems} />
+        </Suspense>
+        {children}
+      </div>
+    </SidebarMobile>
   );
 }

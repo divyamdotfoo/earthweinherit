@@ -4,25 +4,20 @@
 
 @layer base {
   :root {
-    --background: 30, 45%, 91%; /* Warm Beige */
-    --foreground: 0, 0%, 20%; /* Dark Charcoal */
-    --card: 0 0% 100%; /* White */
-    --card-foreground: 240 8% 18%; /* Deep Navy Blue */
-    --popover: 0 0% 100%; /* White */
-    --popover-foreground: 240 5% 12%; /* Midnight Blue */
-    --primary: 25 50% 35%; /* Earthy Red-Brown */
-    --primary-foreground: 0 0% 98%; /* Off-White */
-    --secondary: 30 10% 88%; /* Light Taupe */
-    --secondary-foreground: 240 5% 18%; /* Charcoal Gray */
-
-    /*  */
-    --muted: 240 4.8% 95.9%;
-    --muted-foreground: 240 3.8% 46.1%;
-    --accent: 240 4.8% 95.9%;
-    --accent-foreground: 240 5.9% 10%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 240 5.9% 90%;
+    --background: #f0eee5;
+    --foreground: #29261b;
+    --primary: #ba5b38;
+    --primary-foreground: #fff;
+    --accent: #f8f8f7;
+    --accent-foreground: #29261b;
+    --secondary: #e8e5d8b3;
+    --secondary-foreground: #3d3929;
+    --muted: #ded8c4;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 10%;
+    --card: 0 0% 98%;
+    --card-foreground: 0 0% 10%;
+    --border: #706b5740;
     --input: 240 5.9% 90%;
     --ring: 240 10% 3.9%;
     --chart-1: 12 76% 61%;
@@ -31,9 +26,6 @@
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
     --radius: 0.5rem;
-
-    --chat-sidebar: #171717;
-    --chat-item: #2f2f2f;
   }
 }
 
