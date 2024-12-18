@@ -2,7 +2,12 @@ import fs from "fs/promises";
 import { OpenAIEmbeddings } from "@langchain/openai";
 import { getEncoding } from "js-tiktoken";
 import path from "path";
-import { supa } from "@/supabase/db";
+import { createClient } from "@supabase/supabase-js";
+
+export const supa = createClient(
+  process.env.SUPABASE_URL!,
+  process.env.SUPABASE_KEY!
+);
 
 const getTokenCount = (z: string) => getEncoding("gpt2").encode(z).length;
 
@@ -40,4 +45,4 @@ async function main() {
   });
 }
 
-// main();
+main();

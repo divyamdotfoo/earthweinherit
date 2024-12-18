@@ -16,6 +16,7 @@ import {
   createDataStreamResponse,
 } from "ai";
 import { cookies } from "next/headers";
+import fs from "fs/promises";
 export async function POST(req: Request) {
   try {
     const { id, messages }: { id: string; messages: Message[] } =
@@ -61,9 +62,11 @@ export async function POST(req: Request) {
     const { data: vectorSearchResult } = await supa.rpc("search", {
       // @ts-expect-error
       embedding: embeddings.embedding,
-      match_count: 3,
+      match_count: 10,
       match_threshold: 0.3,
     });
+
+    fs.writeFile("search.json", JSON.stringify(vectorSearchResult));
 
     const prevAnnotationsSourceImages = new Set(
       messages
@@ -96,7 +99,11 @@ export async function POST(req: Request) {
 
         const result = streamText({
           model: openai("gpt-4o-mini"),
-          system: SystemPrompt(JSON.stringify(vectorSearchResult ?? "")),
+          system: SystemPrompt(
+            JSON.stringify(
+              vectorSearchResult?.filter((v) => v.type !== "image") ?? ""
+            )
+          ),
           messages: coreMessages,
           onFinish: async ({ text }) => {
             await saveMessages([
@@ -154,10 +161,12 @@ You are a helpful AI assistant specialized in answering questions about climate 
 Key guidelines:
 - STRICTLY use the provided IPCC report excerpts as your primary source of information.
 - Do not incorporate external knowledge or information not present in the retrieved documents.
+- TRY to HIGHLIGHT the important numbers and information with BOLD.
 - If the retrieved content is insufficient to fully answer the question, acknowledge this transparently.
 - Maintain a professional, scientific, and helpful tone.
 - Focus solely on climate change-related questions.
 - If a query is outside the scope of climate change or cannot be answered using the provided IPCC report content, politely explain that you cannot assist with the specific question.
+-DO NOT incorporate any links in the response.
 
 When responding:
 - Directly reference the source material from the IPCC reports.

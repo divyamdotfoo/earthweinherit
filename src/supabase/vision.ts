@@ -20,7 +20,32 @@ const generateSummaryForImage = async (
       content: [
         {
           type: "text",
-          text: "You are analyzing an image derived from a climate change report. Generate a detailed, standalone summary of the key information and insights represented, ensuring it reads naturally alongside textual data. Focus on communicating the underlying information or findings without directly referencing the image (e.g., avoid phrases like 'this image shows'). Identify and prioritize any specific words, phrases, or technical terms that appear in the image and integrate them naturally into the summary to enhance its relevance. Make the summary concise but comprehensive, capturing all essential points. This summary will be used for embedding and must rank effectively in a vector search alongside textual content.",
+          text: `
+       Analyze the climate change image and generate two complementary components for vector search optimization:
+
+1. Summary Component:
+- Create a concise, scientifically precise summary of the image's content
+- Integrate key scientific terminology naturally
+- Provide contextual insights into the climate change information
+
+2. Question Generation Component:
+- Develop a diverse set of 10-15 potential questions that could be asked about the image
+- Cover a range of depths and perspectives:
+  * Basic comprehension questions
+  * Advanced scientific inquiry questions
+  * Policy and impact-related questions
+  * Technical and methodological questions
+
+Ensure the questions:
+- Are directly relevant to the image's content
+- Span different levels of scientific expertise
+- Could potentially match user search queries
+- Provide multiple entry points for semantic search
+
+The goal is to create a comprehensive, search-optimized textual representation that allows multiple pathways for discovery and ranking in vector search, enhancing the image's discoverability across various user queries about climate change.
+
+JUST RETURN THE SUMMARY AND THE QUESTIONS AND NOTHING ELSE.
+`,
         },
         {
           type: "image_url",

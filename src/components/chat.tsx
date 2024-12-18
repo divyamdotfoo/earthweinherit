@@ -32,8 +32,9 @@ import {
   DialogTrigger,
 } from "./ui/dialog";
 import { deleteChat, getChatById } from "@/actions";
-import { useSidebarMobile } from "./sidebar";
+import { useSidebar } from "./sidebar";
 import Link from "next/link";
+import { useScrollToBottom } from "@/hooks/use-scroll-bottom";
 
 export function Chat({
   id,
@@ -70,8 +71,17 @@ export function Chat({
   }, [pathname]);
 
   const router = useRouter();
-  // const [messagesContainerRef, messagesEndRef] =
-  //   useScrollToBottom<HTMLDivElement>();
+  const [messagesContainerRef, messagesEndRef] =
+    useScrollToBottom<HTMLDivElement>();
+
+  useEffect(() => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({
+        behavior: "smooth",
+        block: "end",
+      });
+    }
+  }, []);
   const questions = useMemo(
     () => [
       "How do we estimate global emissions from cities?",
@@ -82,11 +92,11 @@ export function Chat({
     [id]
   );
 
-  const { isSheetOpen, setSheetOpen } = useSidebarMobile();
+  const { setSheetOpen } = useSidebar();
   return (
     <div className=" relative w-full">
       <div className="w-full h-dvh overflow-y-scroll sm:px-10 px-5">
-        <div className=" flex items-center justify-between pt-3 ">
+        <div className=" flex sticky top-0 z-50 bg-background md:bg-transparent items-center justify-between pt-3 pb-3 md:pb-0 border-b border-border md:border-none ">
           <button
             onClick={() => setSheetOpen(true)}
             className=" bg-accent text-accent-foreground p-1 rounded-md md:hidden"
@@ -107,10 +117,10 @@ export function Chat({
           </ToolTip>
         </div>
         <div
-          // ref={messagesContainerRef}
+          ref={messagesContainerRef}
           className={cn(
             "flex flex-col min-w-0 max-w-[700px] mx-auto gap-6 animate-jumpIn",
-            messages.length === 0 ? "" : "pt-10 pb-40 flex-1"
+            messages.length === 0 ? "" : "pt-8 pb-40 flex-1"
           )}
         >
           {messages.map((message, index) => (
@@ -127,10 +137,7 @@ export function Chat({
               <ThinkingMessage />
             )}
 
-          {/* <div
-            ref={messagesEndRef}
-            className="shrink-0 min-w-[24px] min-h-[48px]"
-          /> */}
+          <div ref={messagesEndRef} className="shrink-0 min-w-[24px] h-24" />
         </div>
         <ChatInput
           questions={questions}
@@ -198,10 +205,18 @@ function ChatInput({
     window && window.history.replaceState({}, "", `/chat/${chatId}`);
   };
 
+  useEffect(() => {
+    if (window && window.innerHeight > 768) {
+      if (textareaRef.current) {
+        textareaRef.current.focus();
+      }
+    }
+  }, []);
+
   return (
     <div
       className={cn(
-        "flex flex-col items-center gap-10 w-full  transition-all left-1/2 -translate-x-1/2  max-w-[840px] mx-auto absolute",
+        "flex flex-col items-center gap-10 w-full transition-all left-1/2 -translate-x-1/2  max-w-[840px] mx-auto fixed md:absolute",
         messages.length === 0
           ? "bottom-1/2 translate-y-1/2 lg:translate-y-1/3 px-5 sm:px-10 "
           : "bottom-0 px-0 sm:px-10"
@@ -223,7 +238,6 @@ function ChatInput({
       >
         <textarea
           ref={textareaRef}
-          autoFocus
           placeholder="Ask anything about climate change"
           name="input-begin"
           className=" bg-transparent font-mono placeholder:text-sm md:placeholder:text-base placeholder:font-mono block border-none  transition-all outline-none pt-4 m-0 focus:outline-none w-full resize-none min-h-[40px] placeholder:tracking-tighter"
@@ -296,23 +310,37 @@ function ChatTitle({ id, title }: { title?: string; id?: string }) {
     if (id)
       setTimeout(() => {
         getChat(id);
-      }, 3000);
+      }, 5000);
   }, [pathname]);
 
   const { mutate } = useSWRConfig();
 
+  const handleShare = async () => {
+    if (navigator) {
+      try {
+        await navigator.share({
+          title: chatTitle ?? "",
+          url: window.location.href,
+        });
+      } catch (e) {}
+    }
+  };
+
   if (chatId && chatTitle) {
     return (
       <Popover>
-        <PopoverTrigger className="flex items-center gap-2 hover:bg-muted md:px-2 py-1 tracking-tighter font-medium rounded-md text-sm">
+        <PopoverTrigger className="flex items-center gap-2 md:bg-muted px-2 py-1 md:py-2 tracking-tighter font-medium rounded-md text-sm">
           <p className=" text-ellipsis text-nowrap whitespace-nowrap overflow-hidden w-48 sm:w-fit">
             {chatTitle}
           </p>
           <ChevronDown className=" w-4 h-4" />
         </PopoverTrigger>
 
-        <PopoverContent className=" flex flex-col max-w-28 bg-accent text-accent-foreground items-start p-0 font-medium text-sm">
-          <button className=" cursor-pointer w-full hover:bg-background p-2 transition-all text-start flex items-center gap-2">
+        <PopoverContent className=" flex flex-col max-w-28 bg-accent text-accent-foreground items-start p-0 font-medium text-sm mt-2 md:mt-0">
+          <button
+            className=" cursor-pointer w-full hover:bg-background p-2 transition-all text-start flex items-center gap-2"
+            onClick={handleShare}
+          >
             <span>
               <LucideShare className=" w-3 h-3" />
             </span>
@@ -326,7 +354,7 @@ function ChatTitle({ id, title }: { title?: string; id?: string }) {
                 Delete
               </button>
             </DialogTrigger>
-            <DialogContent>
+            <DialogContent className="">
               <DialogTitle>Delete chat?</DialogTitle>
               <DialogDescription>
                 Are you sure you want to delete this chat?

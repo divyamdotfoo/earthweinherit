@@ -1,7 +1,7 @@
-import { Sidebar, SidebarMobile } from "@/components/sidebar";
+import { Sidebar, SidebarItems, SidebarProvider } from "@/components/sidebar";
 import { Suspense } from "react";
 import { cookies } from "next/headers";
-import { Chats, getChatsByUser } from "@/supabase/queries";
+import { getChatsByUser } from "@/supabase/queries";
 export default async function ChatLayout({
   children,
 }: {
@@ -9,22 +9,38 @@ export default async function ChatLayout({
 }) {
   const cookieStore = await cookies();
   const user = cookieStore.get("user");
-  let fallbackChatItems: Chats = [];
-  if (user?.value) {
-    const chats = await getChatsByUser(user?.value);
-    if (chats.length) {
-      fallbackChatItems = chats;
-    }
-  }
 
   return (
-    <SidebarMobile>
+    <SidebarProvider>
       <div className="md:flex w-full items-start">
-        <Suspense>
-          <Sidebar fallbackChats={fallbackChatItems} />
-        </Suspense>
+        <Sidebar>
+          <Suspense fallback={<SidebarItemsSkeleton />}>
+            <SidebarLoader user={user?.value} />
+          </Suspense>
+        </Sidebar>
+
         {children}
       </div>
-    </SidebarMobile>
+    </SidebarProvider>
+  );
+}
+
+async function SidebarLoader({ user }: { user: string | undefined }) {
+  const fallbackChatItems = user ? await getChatsByUser(user) : [];
+  return <SidebarItems fallbackChats={fallbackChatItems} />;
+}
+
+function SidebarItemsSkeleton() {
+  return (
+    <div className=" flex flex-col w-full gap-4">
+      {Array(5)
+        .fill(null)
+        .map((_, i) => (
+          <div
+            key={i}
+            className=" w-64 rounded-md bg-muted h-8 animate-pulse"
+          ></div>
+        ))}
+    </div>
   );
 }

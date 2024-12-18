@@ -3,7 +3,7 @@
 import { Message } from "ai";
 import { Markdown } from "./markdown";
 import { ImageIcon, SparklesIcon } from "lucide-react";
-import { filterUniqueBasedOn } from "@/lib/utils";
+import { cn, filterUniqueBasedOn } from "@/lib/utils";
 import Link from "next/link";
 import Image from "next/image";
 
@@ -37,30 +37,34 @@ export const PreviewMessage = ({
       !!message.annotations.length &&
       // @ts-expect-error
       (message.annotations[0]?.sources as MessageAnnotationSource);
-
     return (
       <div className=" self-start w-full">
-        {sources && (
+        {sources && sources.length > 0 && (
           <div className=" pb-6">
             <p className=" pb-2 font-mono text-primary font-bold">Sources</p>
             <div className=" flex items-stretch gap-3 flex-wrap">
               {filterUniqueBasedOn(
                 sources.filter((s) => s.url),
                 "url"
-              ).map((s) => (
-                <Link
-                  href={s.url ?? ""}
-                  key={s.url}
-                  target="_blank"
-                  className=" bg-accent text-accent-foreground transition-all shrink-0 max-w-40 md:max-w-48 text-pretty font-mono p-2 rounded-lg border-[0.3px] border-border hover:shadow-sm"
-                >
-                  <p className=" text-xs pb-2 font-medium">{s.report}</p>
-                  <div className=" flex items-center gap-2">
-                    <IpccLogoForSources />
-                    <p>IPCC</p>
-                  </div>
-                </Link>
-              ))}
+              )
+                .slice(0, 3)
+                .map((s, idx) => (
+                  <Link
+                    href={s.url ?? ""}
+                    key={s.url}
+                    target="_blank"
+                    className={cn(
+                      "bg-accent text-accent-foreground transition-all shrink-0 max-w-40 md:max-w-48 text-pretty font-mono p-2 rounded-lg border-[0.3px] border-border hover:shadow-sm relative",
+                      idx > 1 ? "hidden sm:block" : ""
+                    )}
+                  >
+                    <p className=" text-xs font-medium pb-8">{s.report}</p>
+                    <div className=" flex items-center gap-2 absolute bottom-2">
+                      <IpccLogoForSources />
+                      <p className=" text-sm">IPCC</p>
+                    </div>
+                  </Link>
+                ))}
             </div>
           </div>
         )}
@@ -74,7 +78,7 @@ export const PreviewMessage = ({
                 key={s.img}
                 className=" w-full sm:min-h-56 md:min-h-80 min-h-40 mb-10 overflow-hidden outline-none border-none bg-secondary relative rounded-md"
               >
-                <ImageIcon className=" absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2" />
+                <ImageIcon className=" absolute -z-30 left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2" />
                 <Image
                   src={s.img ?? ""}
                   width={800}
@@ -117,7 +121,7 @@ function IpccLogoForSources() {
       alt="ipcc logo"
       width={40}
       height={40}
-      className=" rounded-full w-6 h-6"
+      className=" rounded-full w-5 h-5"
       src={
         "data:image/vnd.microsoft.icon;base64,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"
       }
