@@ -54,14 +54,25 @@ export default {
           "50%": { transform: "translateY(-5px)" },
           "100%": { transform: "translateY(0)" },
         },
+        fillWidth: {
+          "0%": { width: "0px" },
+          "100%": { width: "100%" },
+        },
+        staggered: {
+          "0%": { transform: "translateY(-100%)", opacity: "0" },
+          "100%": { transform: "translateY(0px)", opacity: "1" },
+        },
       },
       animation: {
-        fadeIn: "fadeIn 0.4s ease-in forwards",
+        fadeIn: "fadeIn 0.8s ease-in-out forwards",
         jumpIn: "jumpIn 0.3s ease-out forwards",
+        fillWidth: "fillWidth 1.4s ease-in-out forwards 0.1s",
+        staggered: "staggered 0.6s ease-in-out",
       },
       fontFamily: {
         sans: ["var(--font-geist-sans)"],
         mono: ["var(--font-geist-mono)"],
+        anton: ["var(--font-anton)"],
       },
     },
   },

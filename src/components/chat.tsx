@@ -21,7 +21,7 @@ import {
   Trash2,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { ToolTip } from "./ui/tooltip";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import {
@@ -34,7 +34,6 @@ import {
 import { deleteChat, getChatById } from "@/actions";
 import { useSidebar } from "./sidebar";
 import Link from "next/link";
-import { useScrollToBottom } from "@/hooks/use-scroll-bottom";
 
 export function Chat({
   id,
@@ -71,8 +70,10 @@ export function Chat({
   }, [pathname]);
 
   const router = useRouter();
-  const [messagesContainerRef, messagesEndRef] =
-    useScrollToBottom<HTMLDivElement>();
+  // const [messagesContainerRef, messagesEndRef] =
+  //   useScrollToBottom<HTMLDivElement>();
+
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (messagesEndRef.current) {
@@ -117,7 +118,7 @@ export function Chat({
           </ToolTip>
         </div>
         <div
-          ref={messagesContainerRef}
+          // ref={messagesContainerRef}
           className={cn(
             "flex flex-col min-w-0 max-w-[700px] mx-auto gap-6 animate-jumpIn",
             messages.length === 0 ? "" : "pt-8 pb-40 flex-1"
@@ -184,6 +185,7 @@ function ChatInput({
   className?: string;
 }) {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const searchParams = useSearchParams();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const textarea = e.target;
@@ -210,6 +212,10 @@ function ChatInput({
       if (textareaRef.current) {
         textareaRef.current.focus();
       }
+    }
+    const question = searchParams.get("q");
+    if (question && question.length) {
+      sendUserMessage(question);
     }
   }, []);
 

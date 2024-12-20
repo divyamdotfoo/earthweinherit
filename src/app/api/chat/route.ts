@@ -16,7 +16,6 @@ import {
   createDataStreamResponse,
 } from "ai";
 import { cookies } from "next/headers";
-import fs from "fs/promises";
 export async function POST(req: Request) {
   try {
     const { id, messages }: { id: string; messages: Message[] } =
@@ -65,8 +64,6 @@ export async function POST(req: Request) {
       match_count: 10,
       match_threshold: 0.3,
     });
-
-    fs.writeFile("search.json", JSON.stringify(vectorSearchResult));
 
     const prevAnnotationsSourceImages = new Set(
       messages
