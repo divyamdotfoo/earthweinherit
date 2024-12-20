@@ -230,7 +230,7 @@ function ChatInput({
     >
       {messages.length === 0 && (
         <h2 className=" text-2xl sm:text-3xl font-medium font-mono">
-          What can I help with?
+          Ask questions that Matter!
         </h2>
       )}
 
