@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "next lint",
     "embed": "node --experimental-strip-types --experimental-transform-types --no-warnings --env-file=.env src/supabase/embeddings.ts",
-    "image": "node --experimental-strip-types --experimental-transform-types --no-warnings --env-file=.env src/supabase/vision.ts"
+    "image": "node --experimental-strip-types --experimental-transform-types --no-warnings --env-file=.env src/supabase/vision.ts",
+    "stats": "node --experimental-strip-types --experimental-transform-types --no-warnings --env-file=.env src/supabase/statistics.ts "
   },
   "dependencies": {
     "@ai-sdk/openai": "^1.0.5",

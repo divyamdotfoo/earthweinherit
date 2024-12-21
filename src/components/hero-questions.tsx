@@ -4,6 +4,7 @@ import Link from "next/link";
 export function HeroQuestions() {
   const questions = [
     "What Is the Evidence for Climate Change?",
+    "How can climate change affect social inequality in Europe?",
     "How do we know humans are causing climate change?",
     "Where Is Climate Change Most Apparent?",
     "A low-carbon industry transition?",
@@ -21,7 +22,6 @@ export function HeroQuestions() {
     "Is climate change increasing wildfire?",
     "Key climate risks for cities and vulnerable populations?",
     "Key options to reduce industrial emissions?",
-    "How can climate change affect social inequality in Europe?",
     "Are Climate Models Improving?",
     "Key climate risks across Asia's sub-regions?",
     "Why are coastal cities at risk from climate change?",
@@ -37,8 +37,8 @@ export function HeroQuestions() {
   ];
   return (
     <div className=" overflow-x-hidden w-full py-8 px-0 md:px-4 relative">
-      <div className=" hidden md:block absolute left-0 inset-y-0 w-8 blur-lg bg-gradient-to-r from-accent to-secondary z-20"></div>
-      <div className=" hidden md:block absolute right-0 inset-y-0 w-8 blur-lg bg-gradient-to-r from-accent to-secondary z-20"></div>
+      {/* <div className=" hidden md:block absolute left-0 inset-y-0 w-8 blur-lg bg-gradient-to-r from-accent to-secondary z-20"></div>
+      <div className=" hidden md:block absolute right-0 inset-y-0 w-8 blur-lg bg-gradient-to-r from-accent to-secondary z-20"></div> */}
 
       {Array(6)
         .fill(null)
@@ -47,26 +47,27 @@ export function HeroQuestions() {
             key={i}
             className="flex items-center gap-3 md:gap-6 flex-nowrap py-3 md:py-4 animate-scroll"
           >
-            {questions
-              .slice(i * 5, i * 5 + 15)
-              .sort(() => Math.random() - 0.5)
-              .map((q) => (
-                <Link
-                  href={`/chat?q=${q}`}
-                  key={q.toLowerCase().replaceAll(" ", "_")}
-                  className={cn(
-                    "px-3 py-2 rounded-lg hover:bg-muted bg-gradient-to-b animate-fadeIn from-25% from-secondary to-muted shadow-sm border-border shrink-0 text-nowrap transition-all hover:shadow-lg opacity-0 text-sm md:text-base",
-                    `${i > 5 ? "md:hidden" : ""} ${
-                      q.split(" ").length > 6 ? " hidden md:block" : null
-                    }`
-                  )}
-                  style={{
-                    animationDelay: "1000ms",
-                  }}
-                >
-                  {q}
-                </Link>
-              ))}
+            {questions.slice(i * 5, i * 5 + 15).map((q, idx) => (
+              <Link
+                href={`/chat?q=${q}`}
+                key={q.toLowerCase().replaceAll(" ", "_")}
+                className={cn(
+                  "px-3 py-2 rounded-lg border-[0.6px] border-transparent hover:border-primary bg-secondary  animate-fadeIn from-25% from-secondary to-muted shadow-sm  shrink-0 text-nowrap transition-all hover:shadow-lg opacity-0 text-sm md:text-base",
+                  `${
+                    idx > 5
+                      ? "md:hidden"
+                      : q.split(" ").length > 6
+                      ? "hidden md:block"
+                      : ""
+                  } `
+                )}
+                style={{
+                  animationDelay: "1000ms",
+                }}
+              >
+                {q}
+              </Link>
+            ))}
           </div>
         ))}
     </div>

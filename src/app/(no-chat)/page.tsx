@@ -7,7 +7,7 @@ export default function Page() {
         Human influence has been the dominant cause of the observed warming
         since the mid-20th century. Yet, we often remain unaware, uncurious, and
         silent. <br /> It's time to break the cycle—
-        <span className="">ask the questions that matter</span>.
+        <span className="">ask questions that matter</span>.
       </p>
       <HeroQuestions />
     </div>

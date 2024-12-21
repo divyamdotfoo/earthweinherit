@@ -38,6 +38,30 @@ export type Database = {
           }
         ];
       };
+      climate_change_indicators: {
+        Row: {
+          co2: number;
+          ice_extent: number;
+          sea_level: number;
+          temperature: number;
+          year: number;
+        };
+        Insert: {
+          co2: number;
+          ice_extent: number;
+          sea_level: number;
+          temperature: number;
+          year: number;
+        };
+        Update: {
+          co2?: number;
+          ice_extent?: number;
+          sea_level?: number;
+          temperature?: number;
+          year?: number;
+        };
+        Relationships: [];
+      };
       message: {
         Row: {
           annotations: Json | null;
@@ -74,6 +98,39 @@ export type Database = {
         ];
       };
       page: {
+        Row: {
+          content: string | null;
+          embedding: string | null;
+          id: number;
+          img: string | null;
+          report_name: string | null;
+          report_url: string | null;
+          token_count: number | null;
+          type: string | null;
+        };
+        Insert: {
+          content?: string | null;
+          embedding?: string | null;
+          id?: number;
+          img?: string | null;
+          report_name?: string | null;
+          report_url?: string | null;
+          token_count?: number | null;
+          type?: string | null;
+        };
+        Update: {
+          content?: string | null;
+          embedding?: string | null;
+          id?: number;
+          img?: string | null;
+          report_name?: string | null;
+          report_url?: string | null;
+          token_count?: number | null;
+          type?: string | null;
+        };
+        Relationships: [];
+      };
+      page_duplicate: {
         Row: {
           content: string | null;
           embedding: string | null;
