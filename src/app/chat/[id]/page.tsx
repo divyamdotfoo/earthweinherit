@@ -1,6 +1,7 @@
 import { Chat } from "@/components/chat";
 import { getChatById, getMessagesByChatId } from "@/supabase/queries";
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
 
 export default async function ChatIdPage({ params }: { params: any }) {
   const { id } = (await params) as { id: string };
@@ -12,5 +13,9 @@ export default async function ChatIdPage({ params }: { params: any }) {
 
   const messages = await getMessagesByChatId(id);
 
-  return <Chat id={id} initialMessages={messages} title={chat.title} />;
+  return (
+    <Suspense>
+      <Chat id={id} initialMessages={messages} title={chat.title} />;
+    </Suspense>
+  );
 }

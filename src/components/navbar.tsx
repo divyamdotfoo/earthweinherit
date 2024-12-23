@@ -4,7 +4,7 @@ import { CSSProperties } from "react";
 
 export function Navbar() {
   return (
-    <div className=" px-4 pt-6">
+    <div className=" px-4 pb-3">
       <div className="relative flex items-start md:items-center flex-col gap-2 md:gap-0 md:flex-row justify-between w-full max-w-7xl mx-auto">
         <div className=" absolute -top-3 h-[1px] bg-foreground animate-fillWidth"></div>
         <Link href={"/"}>

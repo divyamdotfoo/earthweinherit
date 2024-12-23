@@ -9,6 +9,21 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      carbon_conc: {
+        Row: {
+          value: number;
+          year: number;
+        };
+        Insert: {
+          value: number;
+          year?: number;
+        };
+        Update: {
+          value?: number;
+          year?: number;
+        };
+        Relationships: [];
+      };
       chat: {
         Row: {
           createdat: string | null;
@@ -38,26 +53,47 @@ export type Database = {
           }
         ];
       };
-      climate_change_indicators: {
+      ice_extent: {
         Row: {
-          co2: number;
-          ice_extent: number;
-          sea_level: number;
-          temperature: number;
+          value: number;
           year: number;
         };
         Insert: {
-          co2: number;
-          ice_extent: number;
-          sea_level: number;
-          temperature: number;
-          year: number;
+          value: number;
+          year?: number;
         };
         Update: {
-          co2?: number;
-          ice_extent?: number;
-          sea_level?: number;
-          temperature?: number;
+          value?: number;
+          year?: number;
+        };
+        Relationships: [];
+      };
+      mean_sea: {
+        Row: {
+          value: number;
+          year: number;
+        };
+        Insert: {
+          value: number;
+          year?: number;
+        };
+        Update: {
+          value?: number;
+          year?: number;
+        };
+        Relationships: [];
+      };
+      mean_temp: {
+        Row: {
+          value: number;
+          year: number;
+        };
+        Insert: {
+          value: number;
+          year?: number;
+        };
+        Update: {
+          value?: number;
           year?: number;
         };
         Relationships: [];

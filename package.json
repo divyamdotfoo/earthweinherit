@@ -9,7 +9,7 @@
     "lint": "next lint",
     "embed": "node --experimental-strip-types --experimental-transform-types --no-warnings --env-file=.env src/supabase/embeddings.ts",
     "image": "node --experimental-strip-types --experimental-transform-types --no-warnings --env-file=.env src/supabase/vision.ts",
-    "stats": "node --experimental-strip-types --experimental-transform-types --no-warnings --env-file=.env src/supabase/statistics.ts "
+    "stats": "tsx --env-file=.env src/supabase/statistics.ts "
   },
   "dependencies": {
     "@ai-sdk/openai": "^1.0.5",
@@ -29,6 +29,7 @@
     "react": "19.0.0-rc-66855b96-20241106",
     "react-dom": "19.0.0-rc-66855b96-20241106",
     "react-markdown": "^9.0.1",
+    "recharts": "^2.15.0",
     "remark-gfm": "^4.0.0",
     "server-only": "^0.0.1",
     "swr": "^2.2.5",
@@ -46,6 +47,7 @@
     "@types/qrcode": "^1.5.5",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "d3-dsv": "2",
     "eslint": "^9",
     "eslint-config-next": "15.0.3",
     "js-tiktoken": "^1.0.15",

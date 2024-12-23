@@ -43,18 +43,18 @@
     transform: translateX(0);
   }
   100% {
-    transform: translateX(-60%);
+    transform: translateX(-70%);
   }
 }
 
 @media (max-width: 768px) {
   .animate-scroll {
-    animation: scroll 8s linear infinite 1s;
+    animation: scroll 8s linear infinite;
   }
 }
 
 @media (min-width: 769px) {
   .animate-scroll {
-    animation: scroll 40s linear infinite 2s;
+    animation: scroll 40s linear infinite;
   }
 }

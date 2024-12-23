@@ -5,7 +5,7 @@ import { GeistSans } from "geist/font/sans";
 import { Courier_Prime } from "next/font/google";
 export const metadata: Metadata = {
   title: "Earth We Inherit",
-  description: "Solving climate crisis with AI.",
+  description: "Clear answers to all your climate change questions.",
 };
 
 export const viewport = {
@@ -27,7 +27,7 @@ export default function RootLayout({
       <body
         className={`${GeistMono.variable} ${GeistSans.variable} ${anton.variable} font-mono antialiased`}
       >
-        {children}
+        <div className=" w-full">{children}</div>
       </body>
     </html>
   );

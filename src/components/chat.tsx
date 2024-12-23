@@ -316,7 +316,7 @@ function ChatTitle({ id, title }: { title?: string; id?: string }) {
     if (id)
       setTimeout(() => {
         getChat(id);
-      }, 5000);
+      }, 7000);
   }, [pathname]);
 
   const { mutate } = useSWRConfig();

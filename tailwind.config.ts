@@ -59,7 +59,7 @@ export default {
           "100%": { width: "100%" },
         },
         staggered: {
-          "0%": { transform: "translateY(-100%)", opacity: "0" },
+          "0%": { transform: "translateY(50px)", opacity: "0" },
           "100%": { transform: "translateY(0px)", opacity: "1" },
         },
       },
@@ -67,7 +67,7 @@ export default {
         fadeIn: "fadeIn 0.8s ease-in-out forwards",
         jumpIn: "jumpIn 0.3s ease-out forwards",
         fillWidth: "fillWidth 1.4s ease-in-out forwards 0.1s",
-        staggered: "staggered 0.6s ease-in-out",
+        staggered: "staggered 0.8s ease-in-out forwards",
       },
       fontFamily: {
         sans: ["var(--font-geist-sans)"],

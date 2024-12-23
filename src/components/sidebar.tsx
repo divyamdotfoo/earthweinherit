@@ -28,7 +28,7 @@ import useSWR from "swr";
 import Link from "next/link";
 import { Sheet, SheetContent, SheetDescription, SheetTitle } from "./ui/sheet";
 
-export function Sidebar({ children }: { children: React.ReactNode }) {
+export function Sidebar() {
   const { setSidebar, sidebarOpen, isSheetOpen, setSheetOpen } = useSidebar();
   const router = useRouter();
 
@@ -88,7 +88,7 @@ export function Sidebar({ children }: { children: React.ReactNode }) {
           </ToolTip>
         </div>
 
-        {children}
+        <SidebarItems />
       </div>
 
       {/* mobile */}
@@ -113,14 +113,14 @@ export function Sidebar({ children }: { children: React.ReactNode }) {
             Solving climate crisis with AI.
           </SheetDescription>
 
-          {children}
+          <SidebarItems />
         </SheetContent>
       </Sheet>
     </>
   );
 }
 
-export function SidebarItems({ fallbackChats }: { fallbackChats: Chats }) {
+export function SidebarItems() {
   const pathname = usePathname();
   const { sidebarOpen, setSheetOpen } = useSidebar();
   const {
@@ -138,7 +138,7 @@ export function SidebarItems({ fallbackChats }: { fallbackChats: Chats }) {
       return data?.data as Chats;
     },
     {
-      fallbackData: fallbackChats,
+      fallbackData: [],
     }
   );
 
@@ -150,7 +150,18 @@ export function SidebarItems({ fallbackChats }: { fallbackChats: Chats }) {
     <div className=" lg:h-[90%] h-[85%] flex flex-col items-start justify-between gap-5">
       <div className=" h-full overflow-y-auto">
         {sidebarOpen ? (
-          chats.length === 0 ? (
+          chats.length === 0 && isLoading ? (
+            <div className=" flex flex-col w-full gap-4">
+              {Array(5)
+                .fill(null)
+                .map((_, i) => (
+                  <div
+                    key={i}
+                    className=" w-64 rounded-md bg-muted h-8 animate-pulse"
+                  ></div>
+                ))}
+            </div>
+          ) : chats.length === 0 ? (
             <p className=" absolute top-1/2 w-full left-10 font-medium text-lg ">
               No chats yet.
             </p>

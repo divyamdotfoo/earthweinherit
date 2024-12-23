@@ -85,3 +85,21 @@ export async function checkOrCreateUser(user: string | undefined) {
 
   return userId;
 }
+
+/**
+ * @description returns data for carbon-conc, mean-temp, mean-sea, ice-extent
+ */
+export async function getCarbonTempSeaIce() {
+  const [{ data: carbon }, { data: temp }, { data: sea }, { data: ice }] =
+    await Promise.all([
+      supa.from("carbon_conc").select("*").order("year", { ascending: true }),
+      supa.from("mean_temp").select("*").order("year", { ascending: true }),
+      supa.from("mean_sea").select("*").order("year", { ascending: true }),
+      supa.from("ice_extent").select("*").order("year", { ascending: true }),
+    ]);
+  if (!carbon || !temp || !sea || !ice) throw new Error();
+
+  return { carbon, temp, sea, ice };
+}
+
+export type CarbonTempSeaIce = Awaited<ReturnType<typeof getCarbonTempSeaIce>>;

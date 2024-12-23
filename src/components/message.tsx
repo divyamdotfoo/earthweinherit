@@ -22,7 +22,7 @@ export const PreviewMessage = ({
 }) => {
   if (message.role === "user")
     return (
-      <div className=" to-muted bg-secondary from-secondary from-50% self-start font-mono rounded-2xl shadow-sm w-fit p-3 selection:bg-white selection:text-foreground">
+      <div className=" to-muted bg-gradient-to-b from-secondary from-50% self-start font-mono rounded-2xl shadow-sm w-fit p-3 selection:bg-white selection:text-foreground">
         {message.content && (
           <div className="flex flex-col gap-4">
             <Markdown>{message.content as string}</Markdown>
