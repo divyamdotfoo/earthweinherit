@@ -4,7 +4,7 @@ export default async function Page() {
   const id = crypto.randomUUID();
   return (
     <Suspense>
-      <Chat id={id} initialMessages={[]} />
+      <Chat initialMessages={[]} />
     </Suspense>
   );
 }

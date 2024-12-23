@@ -40,12 +40,12 @@ export function Chat({
   initialMessages,
   title,
 }: {
-  id: string;
+  id?: string;
   initialMessages: Array<Message>;
   title?: string;
 }) {
   const { mutate } = useSWRConfig();
-
+  const [chatId, setChatId] = useState(id ?? crypto.randomUUID());
   const {
     messages,
     setMessages,
@@ -56,7 +56,7 @@ export function Chat({
     isLoading,
     stop,
   } = useChat({
-    body: { id: id },
+    body: { id: chatId },
     initialMessages,
     onFinish: () => {
       mutate("/api/history");
@@ -142,7 +142,7 @@ export function Chat({
         </div>
         <ChatInput
           questions={questions}
-          chatId={id}
+          chatId={chatId}
           input={input}
           setInput={setInput}
           isLoading={isLoading}
@@ -304,19 +304,20 @@ function ChatTitle({ id, title }: { title?: string; id?: string }) {
   async function getChat(id: string) {
     try {
       const { data, error } = await getChatById(id);
-      console.log(data, error);
       if (data && data.length) {
         setTitle(data[0].title);
         setId(data[0].id);
       }
     } catch (err) {}
   }
+
   useEffect(() => {
     const id = pathname.split("/").at(-1);
     if (id)
       setTimeout(() => {
         getChat(id);
       }, 7000);
+    else setTitle(null);
   }, [pathname]);
 
   const { mutate } = useSWRConfig();

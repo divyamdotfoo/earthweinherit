@@ -6,6 +6,7 @@ import { Courier_Prime } from "next/font/google";
 export const metadata: Metadata = {
   title: "Earth We Inherit",
   description: "Clear answers to all your climate change questions.",
+  metadataBase: new URL("https://earthweinherit.vercel.app"),
 };
 
 export const viewport = {
