@@ -224,12 +224,12 @@ function ChatInput({
       className={cn(
         "flex flex-col items-center gap-10 w-full transition-all left-1/2 -translate-x-1/2  max-w-[840px] mx-auto fixed md:absolute",
         messages.length === 0
-          ? "bottom-1/2 translate-y-1/2 lg:translate-y-1/3 px-5 sm:px-10 "
+          ? "bottom-1/2 translate-y-[55%] lg:translate-y-1/3 px-5 sm:px-10 "
           : "bottom-0 px-0 sm:px-10"
       )}
     >
       {messages.length === 0 && (
-        <h2 className=" text-2xl sm:text-3xl font-medium font-mono">
+        <h2 className=" text-xl sm:text-2xl lg:text-3xl font-medium font-mono">
           Ask questions that Matter!
         </h2>
       )}
