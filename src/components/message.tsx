@@ -1,5 +1,3 @@
-"use client";
-
 import { Message } from "ai";
 import { Markdown } from "./markdown";
 import { ImageIcon, SparklesIcon } from "lucide-react";
@@ -25,7 +23,7 @@ export const PreviewMessage = ({
       <div className=" to-muted bg-gradient-to-b from-secondary from-50% self-start font-mono rounded-2xl shadow-sm w-fit p-3 selection:bg-white selection:text-foreground">
         {message.content && (
           <div className="flex flex-col gap-4">
-            <Markdown>{message.content as string}</Markdown>
+            <p>{message.content as string}</p>
           </div>
         )}
       </div>
@@ -103,13 +101,32 @@ export const PreviewMessage = ({
 
 export const ThinkingMessage = () => {
   return (
-    <div className="flex items-center justify-center gap-2 self-start">
+    <div className="flex items-center justify-center gap-2 self-start ">
       <SparklesIcon className=" text-white rounded-full w-7 h-7 p-1 stroke-[1.3px] bg-primary" />
-      <div className=" flex items-center">
-        <p className="text-sm pr-1">Thinking</p>
-        <p className=" font-bold animate-bounce">.</p>
-        <p className=" font-bold animate-bounce delay-100">.</p>
-        <p className=" font-bold animate-bounce delay-150">.</p>
+      <div className="h-9 overflow-hidden pt-1">
+        <div
+          className=" flex items-center animate-textUpOut"
+          style={{
+            animationDelay: "2000ms",
+          }}
+        >
+          <p className="text-sm pr-1">Analyzing input </p>
+          <p className=" font-bold animate-bounce">.</p>
+          <p className=" font-bold animate-bounce delay-100">.</p>
+          <p className=" font-bold animate-bounce delay-150">.</p>
+        </div>
+
+        <div
+          className=" flex items-center animate-textUpIn opacity-0"
+          style={{
+            animationDelay: "2100ms",
+          }}
+        >
+          <p className="text-sm pr-1">Generating insights </p>
+          <p className=" font-bold animate-bounce">.</p>
+          <p className=" font-bold animate-bounce delay-100">.</p>
+          <p className=" font-bold animate-bounce delay-150">.</p>
+        </div>
       </div>
     </div>
   );

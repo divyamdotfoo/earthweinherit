@@ -58,3 +58,7 @@
     animation: scroll 40s linear infinite;
   }
 }
+
+.markdown td:last-child {
+  border-right-width: 1px;
+}

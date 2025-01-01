@@ -49,6 +49,7 @@ export default {
           "0%": { opacity: "0" },
           "100%": { opacity: "1" },
         },
+
         jumpIn: {
           "0%": { transform: "translateY(10px)" },
           "50%": { transform: "translateY(-5px)" },
@@ -62,13 +63,25 @@ export default {
           "0%": { transform: "translateY(50px)", opacity: "0" },
           "100%": { transform: "translateY(0px)", opacity: "1" },
         },
+        textUpOut: {
+          "0%": { transform: "translateY(0%)", opacity: "1" },
+          "100%": { transform: "translateY(-100%)", opacity: "0" },
+        },
+        textUpIn: {
+          "0%": { transform: "translateY(0%)", opacity: "0" },
+          "100%": { transform: "translateY(-100%)", opacity: "1" },
+        },
       },
       animation: {
         fadeIn: "fadeIn 0.8s ease-in-out forwards",
+        chat: "fadeIn 0.8s ease-out forwards 0.1s",
         jumpIn: "jumpIn 0.3s ease-out forwards",
         fillWidth: "fillWidth 1.4s ease-in-out forwards 0.1s",
         staggered: "staggered 0.8s ease-in-out forwards",
+        textUpOut: "textUpOut 0.3s ease-in forwards",
+        textUpIn: "textUpIn 0.3s ease-out forwards",
       },
+
       fontFamily: {
         sans: ["var(--font-geist-sans)"],
         mono: ["var(--font-geist-mono)"],
@@ -76,5 +89,5 @@ export default {
       },
     },
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [require("tailwindcss-animate"), require("@tailwindcss/typography")],
 } satisfies Config;
