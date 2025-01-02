@@ -141,6 +141,8 @@ export type Database = {
           img: string | null;
           report_name: string | null;
           report_url: string | null;
+          source: string | null;
+          source_img: string;
           token_count: number | null;
           type: string | null;
         };
@@ -151,6 +153,8 @@ export type Database = {
           img?: string | null;
           report_name?: string | null;
           report_url?: string | null;
+          source?: string | null;
+          source_img?: string;
           token_count?: number | null;
           type?: string | null;
         };
@@ -161,6 +165,8 @@ export type Database = {
           img?: string | null;
           report_name?: string | null;
           report_url?: string | null;
+          source?: string | null;
+          source_img?: string;
           token_count?: number | null;
           type?: string | null;
         };
@@ -174,6 +180,7 @@ export type Database = {
           img: string | null;
           report_name: string | null;
           report_url: string | null;
+          source: string | null;
           token_count: number | null;
           type: string | null;
         };
@@ -184,6 +191,7 @@ export type Database = {
           img?: string | null;
           report_name?: string | null;
           report_url?: string | null;
+          source?: string | null;
           token_count?: number | null;
           type?: string | null;
         };
@@ -194,6 +202,7 @@ export type Database = {
           img?: string | null;
           report_name?: string | null;
           report_url?: string | null;
+          source?: string | null;
           token_count?: number | null;
           type?: string | null;
         };
@@ -344,6 +353,8 @@ export type Database = {
           report_url: string;
           type: string;
           img: string;
+          source: string;
+          source_img: string;
           similarity: number;
         }[];
       };

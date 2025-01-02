@@ -7,8 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "embed": "node --experimental-strip-types --experimental-transform-types --no-warnings --env-file=.env src/supabase/embeddings.ts",
-    "image": "node --experimental-strip-types --experimental-transform-types --no-warnings --env-file=.env src/supabase/vision.ts",
+    "embed:text": "tsx --env-file=.env src/supabase/embedText.ts",
+    "embed:img": "tsx --env-file=.env src/supabase/embedImage.ts",
     "stats": "tsx --env-file=.env src/supabase/statistics.ts "
   },
   "dependencies": {

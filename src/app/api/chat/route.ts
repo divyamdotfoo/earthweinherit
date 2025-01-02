@@ -76,19 +76,16 @@ export async function POST(req: Request) {
         .map((source) => source?.img)
     ) as Set<string>;
 
-    const annotations = {
-      sources: vectorSearchResult
-        ? vectorSearchResult?.map((v) => ({
-            report: v.report_name,
-            url: v.report_url,
-            img: v.img
-              ? prevAnnotationsSourceImages.has(v.img)
-                ? null
-                : v.img
-              : null,
-          }))
-        : [],
-    };
+    const annotations =
+      vectorSearchResult?.map((v) => ({
+        report: v.report_name,
+        url: v.report_url,
+        source: v.source,
+        sourceImg: v.source_img,
+        similarity: v.similarity,
+        img: v.img,
+      })) ?? [];
+
     let temp = "";
     return createDataStreamResponse({
       execute: (dataStream) => {
@@ -167,7 +164,7 @@ Key guidelines:
 
 When responding:
 - Directly reference the source material from the IPCC reports.
-- TRY to respond with tabular data as much as possible.
+- If the questions demand comparisons or tabular data respond with tables.
 - Use citations or quote the specific sections that inform your answer.
 - If multiple retrieved documents provide insights, synthesize the information coherently.
 - CRITICAL NUMERICAL DATA INSTRUCTION: If the retrieved content contains any numerical data (such as percentages, temperatures, years, quantities, or statistical figures), you MUST:

@@ -1,13 +1,16 @@
 import { Message } from "ai";
 import { Markdown } from "./markdown";
-import { ImageIcon, SparklesIcon } from "lucide-react";
+import { SparklesIcon } from "lucide-react";
 import { cn, filterUniqueBasedOn } from "@/lib/utils";
 import Link from "next/link";
 import Image from "next/image";
 
-type MessageAnnotationSource = {
+type Annotations = {
   report: string;
   url: string;
+  similarity: number;
+  source: string;
+  sourceImg: string;
   img: string | null;
 }[];
 
@@ -30,44 +33,17 @@ export const PreviewMessage = ({
     );
 
   if (message.role === "assistant") {
-    const sources =
-      message.annotations &&
-      !!message.annotations.length &&
-      // @ts-expect-error
-      (message.annotations[0]?.sources as MessageAnnotationSource);
+    const annotations =
+      message.annotations && message.annotations.length
+        ? (message.annotations[0] as Annotations)
+        : null;
+
+    console.log(annotations);
     return (
       <div className=" self-start w-full">
-        {sources && sources.length > 0 && (
-          <div className=" pb-6">
-            <p className=" pb-2 font-mono text-primary font-bold">Sources</p>
-            <div className=" flex items-stretch gap-3 flex-wrap">
-              {filterUniqueBasedOn(
-                sources.filter((s) => s.url),
-                "url"
-              )
-                .slice(0, 3)
-                .map((s, idx) => (
-                  <Link
-                    href={s.url ?? ""}
-                    key={s.url}
-                    target="_blank"
-                    className={cn(
-                      "bg-accent text-accent-foreground transition-all shrink-0 max-w-40 md:max-w-48 text-pretty font-mono p-2 rounded-lg border-[0.3px] border-border hover:shadow-sm relative",
-                      idx > 1 ? "hidden sm:block" : ""
-                    )}
-                  >
-                    <p className=" text-xs font-medium pb-8">{s.report}</p>
-                    <div className=" flex items-center gap-2 absolute bottom-2">
-                      <IpccLogoForSources />
-                      <p className=" text-sm">IPCC</p>
-                    </div>
-                  </Link>
-                ))}
-            </div>
-          </div>
-        )}
+        <Sources annotations={annotations} />
 
-        {sources &&
+        {/* {sources &&
           sources
             .filter((s) => s.img)
             .slice(0, 1)
@@ -85,7 +61,7 @@ export const PreviewMessage = ({
                   className=" w-full h-auto rounded-md z-50"
                 />
               </div>
-            ))}
+            ))} */}
 
         <div className="flex flex-col gap-2 w-full">
           {message.content && (
@@ -98,6 +74,54 @@ export const PreviewMessage = ({
     );
   }
 };
+
+export function Sources({
+  annotations,
+}: {
+  annotations: Annotations | null | undefined;
+}) {
+  if (!annotations) return null;
+
+  return (
+    <div className=" pb-6">
+      <p className=" pb-2 font-mono text-primary font-bold">Sources</p>
+      <div className="flex items-stretch gap-3 flex-wrap">
+        {filterUniqueBasedOn(
+          annotations.filter((a) => !a.img && a.url),
+          "url"
+        )
+          .sort((a, b) => a.similarity - b.similarity)
+          .slice(0, 4)
+          .map((source, idx) => (
+            <Link
+              href={source.url ?? ""}
+              key={source.url}
+              target="_blank"
+              className={cn(
+                "bg-accent text-accent-foreground transition-all shrink-0 max-w-40 md:max-w-48 text-pretty font-mono p-2 rounded-lg border-[0.3px] border-border hover:shadow-sm relative",
+                idx > 1 ? "hidden sm:block" : "",
+                idx > 2 ? "hidden lg:block" : ""
+              )}
+            >
+              <p className=" text-xs font-medium pb-8">{source.report}</p>
+              <div className=" flex items-center gap-2 absolute bottom-2">
+                <img src={source.sourceImg} className=" w-5 h-5 rounded-full" />
+                <p className=" text-sm">{source.source}</p>
+              </div>
+            </Link>
+          ))}
+      </div>
+    </div>
+  );
+}
+
+export function FeaturedImages({
+  annotations,
+  prevAnnotations,
+}: {
+  annotations: Annotations;
+  prevAnnotations: Annotations[];
+}) {}
 
 export const ThinkingMessage = () => {
   return (
