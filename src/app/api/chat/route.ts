@@ -65,15 +65,13 @@ export async function POST(req: Request) {
       match_threshold: 0.3,
     });
 
-    const prevAnnotationsSourceImages = new Set(
+    const prevAnnotationImages = new Set(
       messages
         .filter((m) => m.role === "assistant")
         .map((m) => m.annotations)
         .flat(2)
-        // @ts-expect-error
-        .map((anno) => anno?.sources)
-        .flat(2)
-        .map((source) => source?.img)
+        .map((anno: any) => anno.img)
+        .filter(Boolean)
     ) as Set<string>;
 
     const annotations =
@@ -83,7 +81,7 @@ export async function POST(req: Request) {
         source: v.source,
         sourceImg: v.source_img,
         similarity: v.similarity,
-        img: v.img,
+        img: v.img ? (!prevAnnotationImages.has(v.img) ? v.img : null) : null,
       })) ?? [];
 
     let temp = "";

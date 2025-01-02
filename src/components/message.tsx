@@ -1,6 +1,6 @@
 import { Message } from "ai";
 import { Markdown } from "./markdown";
-import { SparklesIcon } from "lucide-react";
+import { ImageIcon, SparklesIcon } from "lucide-react";
 import { cn, filterUniqueBasedOn } from "@/lib/utils";
 import Link from "next/link";
 import Image from "next/image";
@@ -14,13 +14,7 @@ type Annotations = {
   img: string | null;
 }[];
 
-export const PreviewMessage = ({
-  message,
-  allMessages,
-}: {
-  message: Message;
-  allMessages: Message[];
-}) => {
+export const PreviewMessage = ({ message }: { message: Message }) => {
   if (message.role === "user")
     return (
       <div className=" to-muted bg-gradient-to-b from-secondary from-50% self-start font-mono rounded-2xl shadow-sm w-fit p-3 selection:bg-white selection:text-foreground">
@@ -42,26 +36,26 @@ export const PreviewMessage = ({
     return (
       <div className=" self-start w-full">
         <Sources annotations={annotations} />
-
-        {/* {sources &&
-          sources
-            .filter((s) => s.img)
+        {annotations &&
+          annotations.length &&
+          annotations
+            .filter((anno) => anno.img)
             .slice(0, 1)
-            .map((s) => (
+            .map((anno) => (
               <div
-                key={s.img}
+                key={anno.img}
                 className=" w-full sm:min-h-56 md:min-h-80 min-h-40 mb-10 overflow-hidden outline-none border-none bg-secondary relative rounded-md"
               >
                 <ImageIcon className=" absolute -z-30 left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2" />
                 <Image
-                  src={s.img ?? ""}
+                  src={anno.img ?? ""}
                   width={800}
                   height={1000}
                   alt="image from ipcc reports"
                   className=" w-full h-auto rounded-md z-50"
                 />
               </div>
-            ))} */}
+            ))}
 
         <div className="flex flex-col gap-2 w-full">
           {message.content && (
@@ -115,14 +109,6 @@ export function Sources({
   );
 }
 
-export function FeaturedImages({
-  annotations,
-  prevAnnotations,
-}: {
-  annotations: Annotations;
-  prevAnnotations: Annotations[];
-}) {}
-
 export const ThinkingMessage = () => {
   return (
     <div className="flex items-center justify-center gap-2 self-start ">
@@ -155,17 +141,3 @@ export const ThinkingMessage = () => {
     </div>
   );
 };
-
-function IpccLogoForSources() {
-  return (
-    <Image
-      alt="ipcc logo"
-      width={40}
-      height={40}
-      className=" rounded-full w-5 h-5"
-      src={
-        "data:image/vnd.microsoft.icon;base64,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"
-      }
-    />
-  );
-}

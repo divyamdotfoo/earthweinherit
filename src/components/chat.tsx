@@ -125,11 +125,7 @@ export function Chat({
           )}
         >
           {messages.map((message, index) => (
-            <PreviewMessage
-              key={message.id}
-              message={message}
-              allMessages={messages}
-            />
+            <PreviewMessage key={message.id} message={message} />
           ))}
 
           {isLoading &&

@@ -47,16 +47,3 @@ async function main() {
   const res = await supa.from("page").insert(data);
   console.log(res);
 }
-
-// main();
-async function temp() {
-  const res = await supa
-    .from("page")
-    .update({
-      source: "GCB",
-    })
-    .eq("source", "gcb");
-
-  console.log(res);
-}
-temp();
