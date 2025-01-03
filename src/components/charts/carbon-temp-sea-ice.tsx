@@ -12,6 +12,7 @@ import {
 import { ChartContainer } from "@/components/ui/chart";
 
 export function CarbonTempSeaIce({ data }: { data: CarbonTempSeaIce }) {
+  console.log(data);
   return (
     <div
       suppressHydrationWarning

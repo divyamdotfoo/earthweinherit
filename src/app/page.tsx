@@ -1,8 +1,10 @@
+import { CarbonTempSeaIce } from "@/components/charts/carbon-temp-sea-ice";
 import { HeroQuestions } from "@/components/hero-questions";
 import { Navbar } from "@/components/navbar";
+import { getCarbonTempSeaIce } from "@/supabase/queries";
 import Link from "next/link";
 export default async function Page() {
-  // const data = await getCarbonTempSeaIce();
+  const data = await getCarbonTempSeaIce();
   return (
     <div className="relative min-h-screen w-full">
       {/* container one */}
@@ -37,7 +39,7 @@ export default async function Page() {
         </div>
       </div>
       {/* container two */}
-      {/* <div className="min-h-screen sticky top-16 z-10 bg-white text-accent-foreground rounded-t-[28px] w-full">
+      <div className="min-h-screen sticky top-16 z-10 bg-white text-accent-foreground rounded-t-[28px] w-full">
         <div className=" flex max-w-7xl mx-auto py-6 px-4 xl:px-0 border">
           <div className=" basis-1/3"></div>
           <div className=" basis-2/3">
@@ -45,7 +47,7 @@ export default async function Page() {
           </div>
         </div>
       </div>
-      <div className="min-h-screen sticky top-16 z-10 bg-muted text-accent-foreground rounded-t-[28px] w-full"></div> */}
+      <div className="min-h-screen sticky top-16 z-10 bg-muted text-accent-foreground rounded-t-[28px] w-full"></div>
     </div>
   );
 }

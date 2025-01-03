@@ -36,26 +36,26 @@ export const PreviewMessage = ({ message }: { message: Message }) => {
     return (
       <div className=" self-start w-full">
         <Sources annotations={annotations} />
-        {annotations &&
-          annotations.length &&
-          annotations
-            .filter((anno) => anno.img)
-            .slice(0, 1)
-            .map((anno) => (
-              <div
-                key={anno.img}
-                className=" w-full sm:min-h-56 md:min-h-80 min-h-40 mb-10 overflow-hidden outline-none border-none bg-secondary relative rounded-md"
-              >
-                <ImageIcon className=" absolute -z-30 left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2" />
-                <Image
-                  src={anno.img ?? ""}
-                  width={800}
-                  height={1000}
-                  alt="image from ipcc reports"
-                  className=" w-full h-auto rounded-md z-50"
-                />
-              </div>
-            ))}
+        {annotations && annotations.length
+          ? annotations
+              .filter((anno) => anno.img)
+              .slice(0, 1)
+              .map((anno) => (
+                <div
+                  key={anno.img}
+                  className=" w-full sm:min-h-56 md:min-h-80 min-h-40 mb-10 overflow-hidden outline-none border-none bg-secondary relative rounded-md"
+                >
+                  <ImageIcon className=" absolute -z-30 left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2" />
+                  <Image
+                    src={anno.img ?? ""}
+                    width={800}
+                    height={1000}
+                    alt="image from ipcc reports"
+                    className=" w-full h-auto rounded-md z-50"
+                  />
+                </div>
+              ))
+          : null}
 
         <div className="flex flex-col gap-2 w-full">
           {message.content && (
@@ -74,7 +74,7 @@ export function Sources({
 }: {
   annotations: Annotations | null | undefined;
 }) {
-  if (!annotations) return null;
+  if (!annotations || !annotations.length) return;
 
   return (
     <div className=" pb-6">
@@ -85,7 +85,7 @@ export function Sources({
           "url"
         )
           .sort((a, b) => a.similarity - b.similarity)
-          .slice(0, 4)
+          .slice(0, 3)
           .map((source, idx) => (
             <Link
               href={source.url ?? ""}
@@ -93,8 +93,7 @@ export function Sources({
               target="_blank"
               className={cn(
                 "bg-accent text-accent-foreground transition-all shrink-0 max-w-40 md:max-w-48 text-pretty font-mono p-2 rounded-lg border-[0.3px] border-border hover:shadow-sm relative",
-                idx > 1 ? "hidden sm:block" : "",
-                idx > 2 ? "hidden lg:block" : ""
+                idx > 1 ? "hidden sm:block" : ""
               )}
             >
               <p className=" text-xs font-medium pb-8">{source.report}</p>

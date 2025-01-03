@@ -11,14 +11,17 @@ export type Database = {
     Tables: {
       carbon_conc: {
         Row: {
+          normalized: number;
           value: number;
           year: number;
         };
         Insert: {
+          normalized: number;
           value: number;
           year?: number;
         };
         Update: {
+          normalized?: number;
           value?: number;
           year?: number;
         };
@@ -55,14 +58,17 @@ export type Database = {
       };
       ice_extent: {
         Row: {
+          normalized: number;
           value: number;
           year: number;
         };
         Insert: {
+          normalized: number;
           value: number;
           year?: number;
         };
         Update: {
+          normalized?: number;
           value?: number;
           year?: number;
         };
@@ -70,14 +76,17 @@ export type Database = {
       };
       mean_sea: {
         Row: {
+          normalized: number;
           value: number;
           year: number;
         };
         Insert: {
+          normalized: number;
           value: number;
           year?: number;
         };
         Update: {
+          normalized?: number;
           value?: number;
           year?: number;
         };
@@ -85,14 +94,17 @@ export type Database = {
       };
       mean_temp: {
         Row: {
+          normalized: number;
           value: number;
           year: number;
         };
         Insert: {
+          normalized: number;
           value: number;
           year?: number;
         };
         Update: {
+          normalized?: number;
           value?: number;
           year?: number;
         };
