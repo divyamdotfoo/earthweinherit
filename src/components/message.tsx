@@ -17,7 +17,7 @@ type Annotations = {
 export const PreviewMessage = ({ message }: { message: Message }) => {
   if (message.role === "user")
     return (
-      <div className=" to-muted bg-gradient-to-b from-secondary from-50% self-start font-mono rounded-2xl shadow-sm w-fit p-3 selection:bg-white selection:text-foreground">
+      <div className=" to-muted bg-gradient-to-b from-secondary from-50% self-start font-primary rounded-2xl shadow-sm w-fit p-3 selection:bg-white selection:text-foreground">
         {message.content && (
           <div className="flex flex-col gap-4">
             <p>{message.content as string}</p>
@@ -32,7 +32,6 @@ export const PreviewMessage = ({ message }: { message: Message }) => {
         ? (message.annotations[0] as Annotations)
         : null;
 
-    console.log(annotations);
     return (
       <div className=" self-start w-full">
         <Sources annotations={annotations} />
@@ -78,7 +77,7 @@ export function Sources({
 
   return (
     <div className=" pb-6">
-      <p className=" pb-2 font-mono text-primary font-bold">Sources</p>
+      <p className=" pb-2 font-primary text-primary font-bold">Sources</p>
       <div className="flex items-stretch gap-3 flex-wrap">
         {filterUniqueBasedOn(
           annotations.filter((a) => !a.img && a.url),
@@ -92,7 +91,7 @@ export function Sources({
               key={source.url}
               target="_blank"
               className={cn(
-                "bg-accent text-accent-foreground transition-all shrink-0 max-w-40 md:max-w-48 text-pretty font-mono p-2 rounded-lg border-[0.3px] border-border hover:shadow-sm relative",
+                "bg-accent text-accent-foreground transition-all shrink-0 max-w-40 md:max-w-48 text-pretty font-primary p-2 rounded-lg border-[0.3px] border-border hover:shadow-sm relative",
                 idx > 1 ? "hidden sm:block" : ""
               )}
             >

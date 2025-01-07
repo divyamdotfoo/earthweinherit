@@ -242,7 +242,7 @@ function ChatInput({
           ref={textareaRef}
           placeholder="Ask anything about climate change"
           name="input-begin"
-          className=" bg-transparent font-mono placeholder:text-sm md:placeholder:text-base placeholder:font-mono block border-none  transition-all outline-none pt-4 m-0 focus:outline-none w-full resize-none min-h-[40px] placeholder:tracking-tighter"
+          className=" bg-transparent font-primary placeholder:text-sm md:placeholder:text-base placeholder:font-mono block border-none  transition-all outline-none pt-4 m-0 focus:outline-none w-full resize-none min-h-[40px] placeholder:tracking-tighter"
           value={input}
           onChange={handleInputChange}
           onKeyDown={(e) => {

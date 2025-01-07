@@ -11,6 +11,7 @@ export default {
     extend: {
       screens: {
         mlg: "931px",
+        xxl: "1440px",
       },
       colors: {
         background: "var(--background)",
@@ -46,8 +47,9 @@ export default {
       },
       keyframes: {
         fadeIn: {
-          "0%": { opacity: "0" },
-          "100%": { opacity: "1" },
+          to: {
+            opacity: "1",
+          },
         },
 
         jumpIn: {
@@ -60,8 +62,7 @@ export default {
           "100%": { width: "100%" },
         },
         staggered: {
-          "0%": { transform: "translateY(50px)", opacity: "0" },
-          "100%": { transform: "translateY(0px)", opacity: "1" },
+          to: { transform: "translateY(0%)" },
         },
         textUpOut: {
           "0%": { transform: "translateY(0%)", opacity: "1" },
@@ -71,21 +72,24 @@ export default {
           "0%": { transform: "translateY(0%)", opacity: "0" },
           "100%": { transform: "translateY(-100%)", opacity: "1" },
         },
+        sectionUp: {
+          to: { transform: "translateY(0%)", opacity: "1" },
+        },
       },
       animation: {
         fadeIn: "fadeIn 0.8s ease-in-out forwards",
         chat: "fadeIn 0.8s ease-out forwards 0.1s",
         jumpIn: "jumpIn 0.3s ease-out forwards",
-        fillWidth: "fillWidth 1.4s ease-in-out forwards 0.1s",
-        staggered: "staggered 0.8s ease-in-out forwards",
+        fillWidth: "fillWidth 1s ease-in-out forwards 0.1s",
+        staggered: "staggered 0.5s ease-in-out forwards",
         textUpOut: "textUpOut 0.3s ease-in forwards",
         textUpIn: "textUpIn 0.3s ease-out forwards",
+        sectionUp: "sectionUp 0.3s ease-out forwards",
       },
 
       fontFamily: {
-        sans: ["var(--font-geist-sans)"],
-        mono: ["var(--font-geist-mono)"],
-        anton: ["var(--font-anton)"],
+        primary: ["var(--font-geist-mono)"],
+        secondary: ["var(--font-secondary)"],
       },
     },
   },

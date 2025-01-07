@@ -98,8 +98,17 @@ export async function getCarbonTempSeaIce() {
       supa.from("ice_extent").select("*").order("year", { ascending: true }),
     ]);
   if (!carbon || !temp || !sea || !ice) throw new Error();
-
-  return { carbon, temp, sea, ice };
+  const data = [];
+  for (let i = 0; i < 45; i++) {
+    data.push({
+      year: 1980 + i,
+      carbon: carbon[i] ? carbon[i].normalized : null,
+      sea: sea[i] ? sea[i].normalized : null,
+      temp: temp[i] ? temp[i].normalized : null,
+      ice: ice[i] ? ice[i].normalized : null,
+    });
+  }
+  return data;
 }
 
 export type CarbonTempSeaIce = Awaited<ReturnType<typeof getCarbonTempSeaIce>>;

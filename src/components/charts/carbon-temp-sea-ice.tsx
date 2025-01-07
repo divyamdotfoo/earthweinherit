@@ -1,93 +1,250 @@
 "use client";
 import { type CarbonTempSeaIce } from "@/supabase/queries";
 import {
+  Area,
   CartesianGrid,
-  Legend,
+  ComposedChart,
+  Label,
   Line,
-  LineChart,
   Tooltip,
   XAxis,
   YAxis,
 } from "recharts";
 import { ChartContainer } from "@/components/ui/chart";
+import { useEffect, useRef, useState } from "react";
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "../ui/table";
+
+const chartConfig = {
+  carbon: {
+    label: "Global CO2 Concentration",
+    color: "hsl(var(--chart-1))",
+  },
+  sea: {
+    label: "Global Mean Sea level",
+    color: "hsl(var(--chart-2))",
+  },
+  temp: {
+    label: "Global Mean temperature",
+    color: "hsl(var(--chart-3))",
+  },
+  ice: {
+    label: "Global Sea Ice Extent",
+    color: "#3182bd",
+  },
+} as Record<string, any>;
+// Mkm²
 
 export function CarbonTempSeaIce({ data }: { data: CarbonTempSeaIce }) {
-  console.log(data);
+  const [isVisible, setIsVisible] = useState(false);
+  const [isHovering, setHovering] = useState(false);
+  const chartContainerRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+          observer.disconnect();
+        }
+      },
+      {
+        threshold: 0.4,
+      }
+    );
+
+    if (chartContainerRef.current) {
+      observer.observe(chartContainerRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, []);
+
   return (
-    <div
-      suppressHydrationWarning
-      className=" grid grid-cols-2 gap-3 justify-items-center"
-    >
-      <ChartContainer
-        config={{
-          value: { label: "temperature" },
-        }}
-      >
-        <LineChart
-          width={400}
-          height={300}
-          data={data.temp}
-          className=" bg-secondary w-full h-auto rounded-md"
-          margin={{ top: 30, bottom: 10, right: 30 }}
+    <div ref={chartContainerRef} className="">
+      <ChartContainer config={chartConfig} className="max-h-[400px] mx-auto">
+        <ComposedChart
+          className="relative"
+          accessibilityLayer
+          data={data}
+          margin={{
+            left: 12,
+            // right: 32,
+            bottom: 20,
+          }}
+          onMouseMove={() => setHovering(true)}
+          onMouseLeave={() => setHovering(false)}
         >
-          <CartesianGrid />
-          <XAxis dataKey="year" />
-          <YAxis dataKey="value" />
-          <Line type="monotone" dataKey="value" color="#8884d8" />
-          <Tooltip />
-          <Legend />
-        </LineChart>
+          <CartesianGrid strokeDasharray="4 4" vertical={false} />
+          <XAxis
+            dataKey="year"
+            tickLine={false}
+            axisLine={false}
+            tickMargin={10}
+            minTickGap={50}
+            tick={{
+              fill: "#000",
+              fontFamily: "var(--font-secondary)",
+              fontSize: 14,
+            }}
+          />
+          <YAxis
+            axisLine={true}
+            tickMargin={15}
+            type="number"
+            domain={[0, 10]}
+            ticks={[2, 4, 6, 8, 10]}
+            tick={{
+              fill: "#000",
+              fontFamily: "var(--font-secondary)",
+              fontSize: 14,
+            }}
+          >
+            <Label
+              angle={-90}
+              value={"DANGER"}
+              dx={-20}
+              className=" fill-red-500 text-lg"
+            />
+          </YAxis>
+
+          {isVisible && (
+            <Tooltip
+              contentStyle={{
+                border: "solid 0.5px #706b5740",
+                fontFamily: "var(--font-secondary)",
+              }}
+              position={isHovering ? undefined : { x: 100, y: 50 }}
+              labelStyle={{
+                fontSize: "16px",
+                paddingBottom: "8px",
+              }}
+              itemStyle={{
+                fontSize: "14px",
+                paddingBottom: "5px ",
+              }}
+              defaultIndex={4}
+              active={true}
+              wrapperClassName=" rounded-lg shadow-sm"
+              formatter={(value, name) => [
+                Number(value).toFixed(1),
+                chartConfig[name].label,
+              ]}
+            />
+          )}
+          <Area
+            dataKey="ice"
+            type="monotone"
+            // stroke="var(--color-ice)"
+            fill="#E0F7FA"
+            strokeWidth={0}
+            dot={false}
+            isAnimationActive={isVisible}
+            animationBegin={1200}
+          />
+          <Line
+            connectNulls
+            dataKey="carbon"
+            type="monotone"
+            stroke="var(--color-carbon)"
+            strokeWidth={2}
+            dot={false}
+            isAnimationActive={isVisible}
+            animationBegin={300}
+          />
+          <Line
+            connectNulls
+            dataKey="temp"
+            type="monotone"
+            stroke="var(--color-temp)"
+            strokeWidth={2}
+            dot={false}
+            isAnimationActive={isVisible}
+            animationBegin={600}
+          />
+          <Line
+            connectNulls
+            dataKey="sea"
+            type="monotone"
+            stroke="var(--color-sea)"
+            strokeWidth={2}
+            dot={false}
+            animationBegin={1000}
+            isAnimationActive={isVisible}
+          />
+        </ComposedChart>
       </ChartContainer>
-      {/* 
-      <LineChart
-        width={400}
-        height={300}
-        data={data.carbon}
-        className=" bg-secondary w-full h-auto rounded-md"
-        margin={{ top: 30, bottom: 10, right: 30 }}
-      >
-        <CartesianGrid />
-        <XAxis dataKey="year" />
-        <YAxis
-          dataKey="value"
-          domain={([min, max]) => [100, Math.floor(max + 50)]}
-          allowDecimals={false}
-        />
+      <Explanation />
+    </div>
+  );
+}
 
-        <Line type="monotone" dataKey="value" stroke="#8884d8" dot={false} />
-        <Tooltip />
-        <Legend />
-      </LineChart>
-      <LineChart
-        width={400}
-        height={300}
-        data={data.ice}
-        className=" bg-secondary w-full h-auto rounded-md"
-        margin={{ top: 30, bottom: 10, right: 30 }}
-      >
-        <CartesianGrid />
-        <XAxis dataKey="year" />
-        <YAxis dataKey="value" allowDecimals={false} domain={[16, 25]} />
+function Explanation() {
+  const info = [
+    {
+      variable: "Global CO2 Concentration",
+      safe: "280 ppm",
+      danger: "480 ppm",
 
-        <Line type="monotone" dataKey="value" stroke="#8884d8" dot={false} />
-        <Tooltip />
-        <Legend />
-      </LineChart>
-      <LineChart
-        width={400}
-        height={300}
-        data={data.sea}
-        className=" bg-secondary w-full h-auto rounded-md"
-        margin={{ top: 30, bottom: 10, right: 30 }}
-      >
-        <CartesianGrid />
-        <XAxis dataKey="year" />
-        <YAxis dataKey="value" allowDecimals={false} />
-
-        <Line type="monotone" dataKey="value" stroke="#8884d8" dot={false} />
-        <Tooltip />
-        <Legend />
-      </LineChart> */}
+      color: "hsl(var(--chart-1))",
+    },
+    {
+      variable: "Global Mean Sea level",
+      safe: "0 mm",
+      danger: "100 mm",
+      color: "hsl(var(--chart-2))",
+    },
+    {
+      variable: "Global Mean Surface Temperature",
+      safe: "0 °C",
+      danger: "2 °C",
+      color: "hsl(var(--chart-3))",
+    },
+    {
+      variable: "Global Sea Ice Extent",
+      safe: "23 Mkm²",
+      danger: "18 Mkm²",
+      color: "#3182bd",
+    },
+  ];
+  return (
+    <div className=" max-w-2xl pl-12 mx-auto -translate-y-2">
+      <p className=" tracking-tighter xl:text-nowrap text-xs pb-4">
+        <strong>Note: </strong>All variables are normalized between{" "}
+        <strong>0</strong> and <strong>10</strong>, showing a progression from
+        low to high danger.
+      </p>
+      <Table>
+        <TableCaption></TableCaption>
+        <TableHeader>
+          <TableRow className=" p-0">
+            <TableHead>Parameter</TableHead>
+            <TableHead className=" lg:text-center text-green-500 font-medium">
+              Danger - 0
+            </TableHead>
+            <TableHead className=" lg:text-center text-red-500 font-medium">
+              Danger - 10
+            </TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {info.map((item, idx) => (
+            <TableRow key={item.variable}>
+              <TableCell style={{ color: item.color }} className=" font-bold">
+                {item.variable}
+              </TableCell>
+              <TableCell className=" lg:text-center">{item.safe}</TableCell>
+              <TableCell className=" lg:text-center">{item.danger}</TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
     </div>
   );
 }

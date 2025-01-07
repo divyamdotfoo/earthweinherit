@@ -40,7 +40,7 @@ export function ToolTip({
     <TooltipProvider delayDuration={300}>
       <Tooltip>
         <TooltipTrigger asChild>{children}</TooltipTrigger>
-        <TooltipContent className=" font-sans tracking-tighter text-sm font-medium">
+        <TooltipContent className=" tracking-tighter text-sm font-medium">
           {content}
         </TooltipContent>
       </Tooltip>

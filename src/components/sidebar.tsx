@@ -27,6 +27,7 @@ import { ToolTip } from "./ui/tooltip";
 import useSWR from "swr";
 import Link from "next/link";
 import { Sheet, SheetContent, SheetDescription, SheetTitle } from "./ui/sheet";
+import { HoverLink } from "./navbar";
 
 export function Sidebar() {
   const { setSidebar, sidebarOpen, isSheetOpen, setSheetOpen } = useSidebar();
@@ -69,11 +70,11 @@ export function Sidebar() {
           )}
 
           {sidebarOpen && (
-            <Link href={"/"}>
-              <h1 className="font-bold tracking-tighter whitespace-nowrap hover:underline">
+            <HoverLink href={"/"}>
+              <h1 className="font-bold tracking-tighter whitespace-nowrap">
                 Earth we Inherit
               </h1>
-            </Link>
+            </HoverLink>
           )}
           <ToolTip content="New chat">
             <button
@@ -174,7 +175,7 @@ export function SidebarItems() {
                   }}
                   key={c.id}
                   className={cn(
-                    "text-sm relative rounded-md transition-all w-64 text-ellipsis text-secondary-foreground font-mono font-medium px-2 py-1 block overflow-hidden whitespace-nowrap",
+                    "text-sm font-primary relative rounded-md transition-all w-64 text-ellipsis text-secondary-foreground font-medium px-2 py-1 block overflow-hidden whitespace-nowrap",
                     pathname.split("/").at(-1) === c.id
                       ? " bg-accent text-accent-foreground hover:opacity-90"
                       : " hover:bg-accent hover:text-accent-foreground"
@@ -298,7 +299,7 @@ function SyncChats({
                 value={otherCode}
                 onChange={(e) => setOtherCode(e.target.value)}
                 spellCheck={false}
-                className=" bg-accent text-accent-foreground font-sans focus:outline-none  ring-border focus:ring-2 w-full p-2 rounded-md placeholder:text-xs placeholder:font-medium"
+                className=" bg-accent text-accent-foreground focus:outline-none  ring-border focus:ring-2 w-full p-2 rounded-md placeholder:text-xs placeholder:font-medium"
                 placeholder="Enter code to sync this device with other"
               />
               <button
