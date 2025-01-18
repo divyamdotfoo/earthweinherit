@@ -4,6 +4,8 @@ import { ImageIcon, SparklesIcon } from "lucide-react";
 import { cn, filterUniqueBasedOn } from "@/lib/utils";
 import Link from "next/link";
 import Image from "next/image";
+import { createPortal } from "react-dom";
+import { useState } from "react";
 
 type Annotations = {
   report: string;
@@ -35,26 +37,7 @@ export const PreviewMessage = ({ message }: { message: Message }) => {
     return (
       <div className=" self-start w-full">
         <Sources annotations={annotations} />
-        {annotations && annotations.length
-          ? annotations
-              .filter((anno) => anno.img)
-              .slice(0, 1)
-              .map((anno) => (
-                <div
-                  key={anno.img}
-                  className=" w-full sm:min-h-56 md:min-h-80 min-h-40 mb-10 overflow-hidden outline-none border-none bg-secondary relative rounded-md"
-                >
-                  <ImageIcon className=" absolute -z-30 left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2" />
-                  <Image
-                    src={anno.img ?? ""}
-                    width={800}
-                    height={1000}
-                    alt="image from ipcc reports"
-                    className=" w-full h-auto rounded-md z-50"
-                  />
-                </div>
-              ))
-          : null}
+        <ImagePreview annotations={annotations} />
 
         <div className="flex flex-col gap-2 w-full">
           {message.content && (
@@ -107,7 +90,59 @@ export function Sources({
   );
 }
 
-export const ThinkingMessage = () => {
+export function ImagePreview({
+  annotations,
+}: {
+  annotations: Annotations | null | undefined;
+}) {
+  if (!annotations || !annotations.length) return null;
+
+  const annoWithImage = annotations.filter((anno) => anno.img);
+  if (!annoWithImage.length) return null;
+
+  const imgUrl = annoWithImage[0].img;
+  if (!imgUrl) return null;
+
+  const [isPreview, setPreview] = useState(false);
+
+  return (
+    <>
+      <div
+        onClick={() => setPreview(true)}
+        className={cn(
+          "relative w-full sm:min-h-56 md:min-h-80 min-h-40 mb-10 overflow-hidden outline-none border-none bg-secondary rounded-md cursor-pointer"
+        )}
+      >
+        <ImageIcon className="absolute -z-30 left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2" />
+        <Image
+          src={imgUrl}
+          width={800}
+          height={1000}
+          alt="image from IPCC reports"
+          className="w-full h-auto rounded-md z-50"
+        />
+      </div>
+
+      {isPreview &&
+        createPortal(
+          <div
+            className="fixed inset-0 bg-background flex items-center justify-center z-50 transition-opacity duration-300"
+            onClick={() => setPreview(false)}
+          >
+            <Image
+              src={imgUrl}
+              width={800}
+              height={1000}
+              alt="image preview"
+              className="rounded-md transition-transform duration-300 scale-100"
+            />
+          </div>,
+          document.body
+        )}
+    </>
+  );
+}
+export function ThinkingMessage() {
   return (
     <div className="flex items-center justify-center gap-2 self-start ">
       <SparklesIcon className=" text-white rounded-full w-7 h-7 p-1 stroke-[1.3px] bg-primary" />
@@ -138,4 +173,4 @@ export const ThinkingMessage = () => {
       </div>
     </div>
   );
-};
+}

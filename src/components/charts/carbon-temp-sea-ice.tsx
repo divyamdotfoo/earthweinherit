@@ -21,6 +21,9 @@ import {
   TableHeader,
   TableRow,
 } from "../ui/table";
+import { useInView } from "@/hooks/use-in-view";
+import { cn } from "@/lib/utils";
+import { Underline } from "../ui/underline";
 
 const chartConfig = {
   carbon: {
@@ -245,6 +248,126 @@ function Explanation() {
           ))}
         </TableBody>
       </Table>
+    </div>
+  );
+}
+
+export function ChartContextInformation() {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const isInView = useInView(containerRef, {
+    threshold: 0.3,
+    once: true,
+  });
+
+  return (
+    <div
+      data-visible={isInView}
+      ref={containerRef}
+      className="max-w-[480px] text-lg font-medium leading-relaxed pb-8"
+    >
+      <p
+        className={cn("opacity-0", isInView && "animate-fadeIn")}
+        style={{
+          animationDelay: "100ms",
+        }}
+      >
+        The average global temperature has increased
+      </p>
+      <p
+        className={cn("opacity-0", isInView && "animate-fadeIn")}
+        style={{
+          animationDelay: "200ms",
+        }}
+      >
+        by over <span className="text-red-500">0.08C</span> since the
+        pre-industrial era
+      </p>
+      <p
+        className={cn("opacity-0", isInView && "animate-fadeIn")}
+        style={{
+          animationDelay: "300ms",
+        }}
+      >
+        and is increasing faster since{" "}
+        <span className="text-red-500">1970</span> than in
+      </p>
+      <p
+        className={cn("opacity-0", isInView && "animate-fadeIn")}
+        style={{
+          animationDelay: "400ms",
+        }}
+      >
+        any other 50-year period over at least the
+      </p>
+      <p
+        className={cn("opacity-0", isInView && "animate-fadeIn")}
+        style={{
+          animationDelay: "500ms",
+        }}
+      >
+        last 2,000 years.{" "}
+        <Underline color="black" delay={2000}>
+          As the climate heats up,
+        </Underline>
+      </p>
+      <p
+        className={cn("opacity-0", isInView && "animate-fadeIn")}
+        style={{
+          animationDelay: "600ms",
+        }}
+      >
+        <Underline color="black" delay={2000}>
+          rainfall patterns change, evaporation
+        </Underline>
+      </p>
+      <p
+        className={cn("opacity-0", isInView && "animate-fadeIn")}
+        style={{
+          animationDelay: "700ms",
+        }}
+      >
+        <Underline color="black" delay={2000}>
+          increases, glaciers melt, and sea levels
+        </Underline>
+      </p>
+      <p
+        className={cn("opacity-0", isInView && "animate-fadeIn")}
+        style={{
+          animationDelay: "800ms",
+        }}
+      >
+        <Underline color="black" delay={2000}>
+          rise.
+        </Underline>{" "}
+        Under current warming trends,
+      </p>
+      <p
+        className={cn("opacity-0", isInView && "animate-fadeIn")}
+        style={{
+          animationDelay: "900ms",
+        }}
+      >
+        <span className="text-red-500">two-thirds</span> of Earth's glaciers may
+        vanish by
+      </p>
+      <p
+        className={cn("opacity-0", isInView && "animate-fadeIn")}
+        style={{
+          animationDelay: "1000ms",
+        }}
+      >
+        2100. Even if the world follows a low
+      </p>
+      <p
+        className={cn("opacity-0", isInView && "animate-fadeIn")}
+        style={{
+          animationDelay: "1100ms",
+        }}
+      >
+        greenhouse gas pathway, the level of sea rises globally will continue to
+        rise up to about <span className="text-red-500">0.7 meters</span> by
+        2100.
+      </p>
     </div>
   );
 }
