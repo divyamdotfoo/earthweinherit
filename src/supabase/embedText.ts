@@ -25,20 +25,24 @@ async function main() {
   const pdfData = await pdfLoader.load();
 
   const splitter = new RecursiveCharacterTextSplitter({
-    chunkSize: 2500,
+    chunkSize: 2000,
     chunkOverlap: 200,
   });
 
   const documents = await splitter.splitDocuments(pdfData);
+  // fs.writeFile("data.json", JSON.stringify(documents));
+  // return;
   const data = await Promise.all(
     documents.map(async (d) => ({
       content: d.pageContent,
       token_count: getTokenCount(d.pageContent as string),
-      report_name: "Global Carbon Budget 2023",
-      report_url: "https://essd.copernicus.org/articles/15/5301/2023/",
+      report_name: "LIVING PLANET REPORT 2024",
+      report_url: "https://livingplanet.panda.org/",
       type: "report",
       img: null,
-      source: "gcb",
+      source: "WWF",
+      source_img:
+        "https://www.google.com/s2/favicons?sz=64&domain=wwf.panda.org",
       embedding: await llm.embedQuery(d.pageContent),
     }))
   );
@@ -47,3 +51,5 @@ async function main() {
   const res = await supa.from("page").insert(data);
   console.log(res);
 }
+
+main();

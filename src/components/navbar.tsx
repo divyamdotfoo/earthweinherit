@@ -1,10 +1,10 @@
 import { cn } from "@/lib/utils";
 import Link, { LinkProps } from "next/link";
-import { CSSProperties } from "react";
+import { CSSProperties, HTMLAttributeAnchorTarget } from "react";
 
 export function Navbar() {
   return (
-    <div className=" px-6 pt-8 pb-3 font-secondary sticky top-0 z-50 bg-background">
+    <div className=" px-6 pt-8 pb-3 font-secondary sticky top-0 z-50 bg-background selection:bg-white">
       <div className="relative flex items-start md:items-center flex-col gap-2 md:gap-0 md:flex-row justify-between w-full max-w-screen-xxl mx-auto">
         <div className=" absolute -top-3 h-[1px] bg-foreground animate-fillWidth"></div>
         <Link href={"/"}>
@@ -13,37 +13,20 @@ export function Navbar() {
         <div className=" flex items-center md:gap-8 gap-4 text-sm sm:text-base md:text-lg font-medium">
           <HoverLink
             style={{
-              animationDelay: "500ms",
+              animationDelay: "800ms",
             }}
             className=" animate-fadeIn opacity-0"
             href={"/chat"}
           >
             Explore
           </HoverLink>
+
           <HoverLink
             style={{
-              animationDelay: "600ms",
+              animationDelay: "1000ms",
             }}
             className=" animate-fadeIn opacity-0"
-            href={"/"}
-          >
-            N-Danger
-          </HoverLink>
-          <HoverLink
-            style={{
-              animationDelay: "700ms",
-            }}
-            className=" animate-fadeIn opacity-0"
-            href={"/"}
-          >
-            Statistics
-          </HoverLink>
-          <HoverLink
-            style={{
-              animationDelay: "800ms",
-            }}
-            className=" animate-fadeIn opacity-0"
-            href={"/"}
+            href={"/#resources"}
           >
             Resources
           </HoverLink>
@@ -57,7 +40,7 @@ interface HoverLinkProps extends LinkProps {
   children: React.ReactNode;
   color?: string;
   className?: string;
-
+  target?: HTMLAttributeAnchorTarget;
   style?: CSSProperties;
 }
 
@@ -66,10 +49,12 @@ export function HoverLink({
   className,
   style,
   color = "#000",
+  target = "_parent",
   ...props
 }: HoverLinkProps) {
   return (
     <Link
+      target={target}
       {...props}
       className={cn("relative inline-block group", className)}
       style={style}

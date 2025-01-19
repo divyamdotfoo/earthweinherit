@@ -6,6 +6,8 @@
   :root {
     --background: #f0eee5;
     --foreground: #29261b;
+    --footer: #141413;
+    --footer-foreground: #b0aea5;
     --primary: #ba5b38;
     --primary-foreground: #fff;
     --accent: #f8f8f7;

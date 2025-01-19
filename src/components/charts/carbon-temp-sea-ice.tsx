@@ -1,5 +1,5 @@
 "use client";
-import { type CarbonTempSeaIce } from "@/supabase/queries";
+import { type CarbonTempSeaIceNormalised } from "@/supabase/queries";
 import {
   Area,
   CartesianGrid,
@@ -45,7 +45,11 @@ const chartConfig = {
 } as Record<string, any>;
 // Mkm²
 
-export function CarbonTempSeaIce({ data }: { data: CarbonTempSeaIce }) {
+export function CarbonTempSeaIce({
+  data,
+}: {
+  data: CarbonTempSeaIceNormalised;
+}) {
   const [isVisible, setIsVisible] = useState(false);
   const [isHovering, setHovering] = useState(false);
   const chartContainerRef = useRef<HTMLDivElement>(null);

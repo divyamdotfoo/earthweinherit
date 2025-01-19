@@ -16,6 +16,8 @@ export default {
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
+        footer: "var(--footer)",
+        "footer-foreground": "var(--footer-foreground)",
         muted: "var(--muted)",
         secondary: "var(--secondary)",
         "secondary-foreground": "var(--secondary-foreground)",

@@ -162,11 +162,7 @@ export function SidebarItems() {
                   ></div>
                 ))}
             </div>
-          ) : chats.length === 0 ? (
-            <p className=" absolute top-1/2 w-full left-10 font-medium text-lg ">
-              No chats yet.
-            </p>
-          ) : (
+          ) : chats.length === 0 ? null : (
             <div className=" flex flex-col items-center w-full gap-2 pb-10">
               {chats.map((c) => (
                 <Link

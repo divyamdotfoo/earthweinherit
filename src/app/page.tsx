@@ -4,16 +4,17 @@ import {
 } from "@/components/charts/carbon-temp-sea-ice";
 import { HeroQuestions } from "@/components/hero-questions";
 import { HoverLink, Navbar } from "@/components/navbar";
-import { getCarbonTempSeaIce } from "@/supabase/queries";
+import { Resources } from "@/lib/resources";
+import { getCarbonTempSeaIceNormalised } from "@/supabase/queries";
 import { ArrowUpRightFromSquare } from "lucide-react";
 import Link from "next/link";
 
 export default async function Page() {
-  const data = await getCarbonTempSeaIce();
+  const data = await getCarbonTempSeaIceNormalised();
   return (
     <div className=" h-dvh w-full overflow-auto snap-y snap-mandatory relative">
       <Navbar />
-      <div className="h-fit w-full top-0 snap-start snap-always scroll-mt-20">
+      <div className="h-fit w-full snap-start snap-always scroll-mt-20">
         <div className=" pb-6 selection:bg-white selection:text-black">
           <p
             className="font-primary animate-fadeIn font-medium max-w-screen-xxl mx-auto md:text-2xl tracking-wider md:leading-9 px-6 opacity-0"
@@ -29,7 +30,7 @@ export default async function Page() {
           <HeroQuestions />
         </div>
       </div>
-      <div className=" h-[calc(100dvh-80px)] translate-y-10 animate-sectionUp opacity-0 delay-700 bg-white text-accent-foreground rounded-3xl w-full  top-16 snap-start snap-always scroll-mt-20">
+      <div className=" h-[calc(100dvh-80px)] translate-y-10 animate-sectionUp opacity-0 delay-700 bg-white text-accent-foreground rounded-3xl w-full snap-start snap-always scroll-mt-20 selection:bg-background">
         <div className=" flex flex-col lg:flex-row max-w-screen-xxl mx-auto py-6 px-6 justify-between">
           <div className="lg:basis-2/5 shrink-0">
             <div className=" w-full flex gap-x-2 xl:gap-x-3 flex-wrap select-none pb-4">
@@ -54,7 +55,8 @@ export default async function Page() {
             <ChartContextInformation />
 
             <HoverLink
-              href={"/"}
+              target="_blank"
+              href={"https://earth.org/ipcc-assessment-report/"}
               color="var(--primary)"
               className=" text-primary w-fit font-medium flex items-center gap-2"
             >
@@ -67,8 +69,24 @@ export default async function Page() {
           </div>
         </div>
       </div>
-      <div className=" bg-yellow-700 h-[calc(100dvh-64px)] w-full  top-16 snap-start snap-always"></div>
-      <div className=" bg-pink-700 h-[calc(100dvh-64px)] w-full  top-16 snap-start snap-always"></div>
+      <div
+        id="resources"
+        className="h-[calc(100dvh-80px)] scroll-mt-20 rounded-t-3xl bg-footer w-full  top-16 snap-start snap-always p-6 selection:bg-primary"
+      >
+        <h3 className=" text-white font-semibold text-3xl pb-6">Resources</h3>
+        <div className=" w-full grid grid-cols-3 gap-x-10 gap-y-6">
+          {Resources.map((r) => (
+            <Link
+              key={r.href}
+              href={r.href}
+              target="_blank"
+              className=" block tracking-tighter text-footer-foreground hover:text-white transition-all"
+            >
+              {r.title}
+            </Link>
+          ))}
+        </div>
+      </div>
     </div>
   );
 }

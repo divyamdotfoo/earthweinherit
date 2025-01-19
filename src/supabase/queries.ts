@@ -87,9 +87,9 @@ export async function checkOrCreateUser(user: string | undefined) {
 }
 
 /**
- * @description returns data for carbon-conc, mean-temp, mean-sea, ice-extent
+ * @description returns normalised data for carbon-conc, mean-temp, mean-sea, ice-extent
  */
-export async function getCarbonTempSeaIce() {
+export async function getCarbonTempSeaIceNormalised() {
   const [{ data: carbon }, { data: temp }, { data: sea }, { data: ice }] =
     await Promise.all([
       supa.from("carbon_conc").select("*").order("year", { ascending: true }),
@@ -111,4 +111,21 @@ export async function getCarbonTempSeaIce() {
   return data;
 }
 
+export type CarbonTempSeaIceNormalised = Awaited<
+  ReturnType<typeof getCarbonTempSeaIceNormalised>
+>;
+
+export async function getCarbonTempSeaIce() {
+  const [{ data: carbon }, { data: temp }, { data: sea }, { data: ice }] =
+    await Promise.all([
+      supa.from("carbon_conc").select("*").order("year", { ascending: true }),
+      supa.from("mean_temp").select("*").order("year", { ascending: true }),
+      supa.from("mean_sea").select("*").order("year", { ascending: true }),
+      supa.from("ice_extent").select("*").order("year", { ascending: true }),
+    ]);
+  if (!carbon || !temp || !sea || !ice) throw new Error();
+  return { carbon, temp, sea, ice };
+}
+
 export type CarbonTempSeaIce = Awaited<ReturnType<typeof getCarbonTempSeaIce>>;
+export type SingleChartData = CarbonTempSeaIce["carbon"];
