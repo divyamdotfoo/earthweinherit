@@ -138,7 +138,7 @@ export async function POST(req: Request) {
         result.mergeIntoDataStream(dataStream);
       },
       onError: (err) => {
-        console.log(err);
+        console.error(err);
         const baseUrl =
           process.env.NODE_ENV === "development" ? "http://localhost:3000" : "";
         fetch(`${baseUrl}/api/error`, {
@@ -150,6 +150,8 @@ export async function POST(req: Request) {
             annotations: [annotations],
             chatContext,
           }),
+        }).catch((err) => {
+          console.error(err);
         });
         return String(err);
       },
