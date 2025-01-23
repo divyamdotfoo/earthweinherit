@@ -29,18 +29,21 @@ export type Database = {
       };
       chat: {
         Row: {
+          context: Json | null;
           createdat: string | null;
           id: string;
           title: string;
           userid: string;
         };
         Insert: {
+          context?: Json | null;
           createdat?: string | null;
           id: string;
           title: string;
           userid: string;
         };
         Update: {
+          context?: Json | null;
           createdat?: string | null;
           id?: string;
           title?: string;
@@ -179,42 +182,6 @@ export type Database = {
           report_url?: string | null;
           source?: string | null;
           source_img?: string;
-          token_count?: number | null;
-          type?: string | null;
-        };
-        Relationships: [];
-      };
-      page_duplicate: {
-        Row: {
-          content: string | null;
-          embedding: string | null;
-          id: number;
-          img: string | null;
-          report_name: string | null;
-          report_url: string | null;
-          source: string | null;
-          token_count: number | null;
-          type: string | null;
-        };
-        Insert: {
-          content?: string | null;
-          embedding?: string | null;
-          id?: number;
-          img?: string | null;
-          report_name?: string | null;
-          report_url?: string | null;
-          source?: string | null;
-          token_count?: number | null;
-          type?: string | null;
-        };
-        Update: {
-          content?: string | null;
-          embedding?: string | null;
-          id?: number;
-          img?: string | null;
-          report_name?: string | null;
-          report_url?: string | null;
-          source?: string | null;
           token_count?: number | null;
           type?: string | null;
         };

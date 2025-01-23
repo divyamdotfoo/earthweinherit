@@ -6,15 +6,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { createPortal } from "react-dom";
 import { useState } from "react";
-
-type Annotations = {
-  report: string;
-  url: string;
-  similarity: number;
-  source: string;
-  sourceImg: string;
-  img: string | null;
-}[];
+import { Annotations } from "@/supabase/queries";
 
 export const PreviewMessage = ({ message }: { message: Message }) => {
   if (message.role === "user")
@@ -63,24 +55,27 @@ export function Sources({
       <p className=" pb-2 font-primary text-primary font-bold">Sources</p>
       <div className="flex items-stretch gap-3 flex-wrap">
         {filterUniqueBasedOn(
-          annotations.filter((a) => !a.img && a.url),
-          "url"
+          annotations.filter((a) => !a.img && a.report_url),
+          "report_url"
         )
           .sort((a, b) => a.similarity - b.similarity)
           .slice(0, 3)
           .map((source, idx) => (
             <Link
-              href={source.url ?? ""}
-              key={source.url}
+              href={source.report_url ?? ""}
+              key={source.report_url}
               target="_blank"
               className={cn(
                 "bg-accent text-accent-foreground transition-all shrink-0 max-w-40 md:max-w-48 text-pretty font-primary p-2 rounded-lg border-[0.3px] border-border hover:shadow-sm relative",
                 idx > 1 ? "hidden sm:block" : ""
               )}
             >
-              <p className=" text-xs font-medium pb-8">{source.report}</p>
+              <p className=" text-xs font-medium pb-8">{source.report_name}</p>
               <div className=" flex items-center gap-2 absolute bottom-2">
-                <img src={source.sourceImg} className=" w-5 h-5 rounded-full" />
+                <img
+                  src={source.source_img}
+                  className=" w-5 h-5 rounded-full"
+                />
                 <p className=" text-sm">{source.source}</p>
               </div>
             </Link>

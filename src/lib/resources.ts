@@ -39,4 +39,8 @@ export const Resources: { title: string; href: string }[] = [
     title: "How to Act on Climate Change: A User's Guide",
     href: "https://www.earthday.org/campaign/act-on-climate-change/",
   },
+  {
+    title: "A guide to Climate Change for kids",
+    href: "https://climatekids.nasa.gov/kids-guide-to-climate-change/",
+  },
 ];

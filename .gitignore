@@ -44,3 +44,5 @@ pdfs/
 documents/
 
 package-lock.json
+
+data.json

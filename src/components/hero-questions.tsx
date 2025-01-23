@@ -45,7 +45,6 @@ export function HeroQuestions() {
     "How do wetlands store carbon effectively?",
     "What emissions come from building operations?",
     "Strategies to fight climate change effectively?",
-    "What defines a carbon footprint?",
     "What is the role of renewable energy?",
     "How does overfishing affect climate systems?",
     "Can reforestation help mitigate climate change?",

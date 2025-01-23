@@ -6,12 +6,6 @@ async function main() {
   // carbonConc();
   // iceExtent();
   // meanSea();
-  await supa
-    .from("page")
-    .update({
-      source_img: "https://www.google.com/s2/favicons?sz=64&domain=ipbes.net",
-    })
-    .eq("source", "IPBES 11");
 }
 
 main();

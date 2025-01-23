@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { GeistMono } from "geist/font/mono";
 import { Courier_Prime } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
 export const metadata: Metadata = {
   title: "Earth We Inherit",
   description: "Clear answers to all your climate change questions.",
@@ -28,6 +29,7 @@ export default function RootLayout({
         className={`${GeistMono.variable} ${secondaryFont.variable} font-primary text-foreground antialiased`}
       >
         <div className=" w-full">{children}</div>
+        <Analytics />
       </body>
     </html>
   );

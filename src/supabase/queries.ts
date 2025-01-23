@@ -3,7 +3,8 @@ import "server-only";
 import { supa } from "@/supabase/db";
 import { JSONValue, Message } from "ai";
 import { customAlphabet } from "nanoid";
-
+import { Database } from "./types";
+import { filterUniqueBasedOn } from "@/lib/utils";
 export async function getChatsByUser(user: string) {
   const { data: chats, error } = await supa
     .from("chat")
@@ -17,14 +18,8 @@ export async function getChatsByUser(user: string) {
 export type Chats = Awaited<ReturnType<typeof getChatsByUser>>;
 
 export async function getChatById(chatId: string) {
-  try {
-    const { data, error } = await supa.from("chat").select().eq("id", chatId);
-    if (error) throw new Error();
-    return data[0];
-  } catch (error) {
-    console.error("DB fails, when getting chat from id", error);
-    throw error;
-  }
+  const { data } = await supa.from("chat").select().eq("id", chatId);
+  return data ? data[0] : null;
 }
 
 export async function createChat({
@@ -75,6 +70,22 @@ export async function saveMessages(
   }[]
 ) {
   await supa.from("message").insert(messages);
+}
+
+export async function saveChatContext(chatId: string, context: ChatContext) {
+  const prevContextData = await supa
+    .from("chat")
+    .select("context")
+    .eq("id", chatId);
+
+  console.log(prevContextData.data);
+  const prevContext =
+    Array.isArray(prevContextData.data) && prevContextData.data[0].context
+      ? (prevContextData.data[0].context as ChatContext)
+      : [];
+
+  const ctx = filterUniqueBasedOn([...prevContext, ...context], "id");
+  await supa.from("chat").update({ context: ctx }).eq("id", chatId);
 }
 
 export async function checkOrCreateUser(user: string | undefined) {
@@ -129,3 +140,13 @@ export async function getCarbonTempSeaIce() {
 
 export type CarbonTempSeaIce = Awaited<ReturnType<typeof getCarbonTempSeaIce>>;
 export type SingleChartData = CarbonTempSeaIce["carbon"];
+
+export type Annotations = Pick<
+  Database["public"]["Functions"]["search"]["Returns"][number],
+  "img" | "report_name" | "report_url" | "source" | "source_img" | "similarity"
+>[];
+
+export type ChatContext = Pick<
+  Database["public"]["Functions"]["search"]["Returns"][number],
+  "content" | "similarity" | "id"
+>[];

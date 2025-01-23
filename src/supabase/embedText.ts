@@ -2,8 +2,8 @@ import { OpenAIEmbeddings } from "@langchain/openai";
 import { getEncoding } from "js-tiktoken";
 import { createClient } from "@supabase/supabase-js";
 import { PDFLoader } from "@langchain/community/document_loaders/fs/pdf";
-import { RecursiveCharacterTextSplitter } from "@langchain/textsplitters";
-import fs from "fs/promises";
+import { TokenTextSplitter } from "@langchain/textsplitters";
+// import fs from "fs/promises";
 export const supa = createClient(
   process.env.SUPABASE_URL!,
   process.env.SUPABASE_KEY!
@@ -24,29 +24,31 @@ async function main() {
 
   const pdfData = await pdfLoader.load();
 
-  const splitter = new RecursiveCharacterTextSplitter({
-    chunkSize: 2000,
-    chunkOverlap: 200,
+  const tokenSplitter = new TokenTextSplitter({
+    chunkSize: 256,
+    chunkOverlap: 20,
   });
 
-  const documents = await splitter.splitDocuments(pdfData);
+  const documents = (await tokenSplitter.splitDocuments(pdfData)).map((d) => ({
+    pageContent: d.pageContent.replace(/[^\x20-\x7E]/g, ""),
+  }));
   // fs.writeFile("data.json", JSON.stringify(documents));
+
   // return;
   const data = await Promise.all(
     documents.map(async (d) => ({
       content: d.pageContent,
-      token_count: getTokenCount(d.pageContent as string),
-      report_name: "LIVING PLANET REPORT 2024",
-      report_url: "https://livingplanet.panda.org/",
+      token_count: 256,
+      report_name: "For people and planet: the UNEP strategy for 2022-2025",
+      report_url:
+        "https://www.unep.org/resources/people-and-planet-unep-strategy-2022-2025",
       type: "report",
       img: null,
-      source: "WWF",
-      source_img:
-        "https://www.google.com/s2/favicons?sz=64&domain=wwf.panda.org",
+      source: "UNEP",
+      source_img: "https://www.google.com/s2/favicons?sz=64&domain=unep.org/",
       embedding: await llm.embedQuery(d.pageContent),
     }))
   );
-  fs.writeFile("data.json", JSON.stringify(data));
   console.log(data.length);
   const res = await supa.from("page").insert(data);
   console.log(res);

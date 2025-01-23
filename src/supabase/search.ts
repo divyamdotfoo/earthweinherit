@@ -15,7 +15,7 @@ export async function search() {
   const { data, error } = await supa.rpc("search", {
     // @ts-expect-error
     embedding: embeddedQuery,
-    match_threshold: 0.5,
+    match_threshold: 0.3,
     match_count: 10,
   });
 
