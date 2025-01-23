@@ -140,9 +140,7 @@ export async function POST(req: Request) {
       onError: (err) => {
         console.log(err);
         const baseUrl =
-          process.env.NODE_ENV === "development"
-            ? "http://localhost:3000"
-            : "https://earthweinherit.vercel.app";
+          process.env.NODE_ENV === "development" ? "http://localhost:3000" : "";
         fetch(`${baseUrl}/api/error`, {
           method: "POST",
           body: JSON.stringify({
