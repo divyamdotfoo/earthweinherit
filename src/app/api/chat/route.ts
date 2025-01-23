@@ -1,4 +1,10 @@
-import { Annotations, ChatContext, saveChatContext } from "@/supabase/queries";
+import {
+  Annotations,
+  ChatContext,
+  saveChatContext,
+  updateMessageAnnotations,
+  updateMessageContent,
+} from "@/supabase/queries";
 import { supa } from "@/supabase/db";
 import {
   checkOrCreateUser,
@@ -27,6 +33,7 @@ export async function POST(req: Request) {
   let temp = "";
   let annotations: Annotations = [];
   let chatContext: ChatContext = [];
+  let assistantResponseId = "";
   try {
     const cookiesStore = await cookies();
     const userCookie = cookiesStore.get("user");
@@ -51,7 +58,7 @@ export async function POST(req: Request) {
       await createChat({ id, title, user: user });
     }
 
-    const [embeddings] = await Promise.all([
+    const [embeddings, messagesInserted] = await Promise.all([
       embed({
         model: openai.embedding("text-embedding-3-small", { dimensions: 768 }),
         value: latestUserMessage.content,
@@ -62,8 +69,20 @@ export async function POST(req: Request) {
           content: latestUserMessage.content as string,
           role: latestUserMessage.role,
         },
+        {
+          chatid: id,
+          content: "",
+          role: "assistant",
+        },
       ]),
     ]);
+
+    assistantResponseId =
+      messagesInserted &&
+      messagesInserted.data &&
+      Array.isArray(messagesInserted.data)
+        ? messagesInserted.data[1].id
+        : "";
 
     const { data: vectorSearchResult } = await supa.rpc("search", {
       // @ts-expect-error
@@ -91,6 +110,8 @@ export async function POST(req: Request) {
         img: v.img ? (!prevAnnotationImages.has(v.img) ? v.img : "") : "",
       })) ?? [];
 
+    updateMessageAnnotations(assistantResponseId, annotations);
+
     chatContext =
       vectorSearchResult
         ?.filter((d) => d.type !== "image")
@@ -101,6 +122,8 @@ export async function POST(req: Request) {
         }))
         .sort((a, b) => b.similarity - a.similarity)
         .slice(0, 3) ?? [];
+
+    saveChatContext(id, chatContext);
 
     return createDataStreamResponse({
       execute: (dataStream) => {
@@ -116,57 +139,29 @@ export async function POST(req: Request) {
           ),
           messages: coreMessages,
           onFinish: async ({ text }) => {
-            await Promise.all([
-              saveMessages([
-                {
-                  chatid: id,
-                  content: text,
-                  role: "assistant",
-                  annotations: [annotations],
-                },
-              ]),
-              saveChatContext(id, chatContext),
-            ]);
+            await updateMessageContent(assistantResponseId, text);
           },
           onChunk: async ({ chunk }) => {
             if (chunk.type === "text-delta") {
               temp += chunk.textDelta;
             }
+            if (temp.length % 100 === 0) {
+            }
+            updateMessageContent(assistantResponseId, temp);
           },
         });
 
         result.mergeIntoDataStream(dataStream);
       },
       onError: (err) => {
-        console.error(err);
-        const baseUrl =
-          process.env.NODE_ENV === "development" ? "http://localhost:3000" : "";
-        fetch(`${baseUrl}/api/error`, {
-          method: "POST",
-          body: JSON.stringify({
-            chatid: id,
-            content: temp,
-            role: "assistant",
-            annotations: [annotations],
-            chatContext,
-          }),
-        }).catch((err) => {
-          console.error(err);
-        });
         return String(err);
       },
     });
   } catch (err) {
     console.log(err);
     await Promise.all([
-      saveMessages([
-        {
-          chatid: id,
-          content: temp,
-          role: "assistant",
-          annotations: [annotations],
-        },
-      ]),
+      updateMessageAnnotations(assistantResponseId, annotations),
+      updateMessageContent(assistantResponseId, temp),
       saveChatContext(id, chatContext),
     ]);
     return new Response("Something went wrong on the server", { status: 500 });

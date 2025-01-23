@@ -69,7 +69,29 @@ export async function saveMessages(
     annotations?: JSONValue;
   }[]
 ) {
-  await supa.from("message").insert(messages);
+  try {
+    const messagesInserted = await supa
+      .from("message")
+      .insert(messages)
+      .select("*");
+    return messagesInserted;
+  } catch (err) {
+    console.log(err);
+  }
+}
+
+export async function updateMessageContent(messageId: string, content: string) {
+  await supa.from("message").update({ content }).eq("id", messageId);
+}
+
+export async function updateMessageAnnotations(
+  messageId: string,
+  annotations: Annotations
+) {
+  await supa
+    .from("message")
+    .update({ annotations: [annotations] })
+    .eq("id", messageId);
 }
 
 export async function saveChatContext(chatId: string, context: ChatContext) {
