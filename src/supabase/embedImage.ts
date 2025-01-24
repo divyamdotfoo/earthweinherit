@@ -1,17 +1,27 @@
-import { ChatOpenAI } from "@langchain/openai";
+import { ChatOpenAI, OpenAIEmbeddings } from "@langchain/openai";
 import { HumanMessage } from "@langchain/core/messages";
 import fs from "fs/promises";
 import path from "path";
+import { getEncoding } from "js-tiktoken";
+
 const llm = new ChatOpenAI({
   apiKey: process.env.OPENAI,
   model: "gpt-4o-mini",
   maxTokens: 800,
 });
 
+const embed = new OpenAIEmbeddings({
+  apiKey: process.env.OPENAI,
+  dimensions: 768,
+  model: "text-embedding-3-small",
+});
+
+const getTokenCount = (z: string) => getEncoding("gpt2").encode(z).length;
+
 const generateSummaryForImage = async (
   imagePath: string,
   imageName: string,
-  baseUrl: string
+  baseUrl = "https://bjidogcgmawofbnescun.supabase.co/storage/v1/object/public/ipcc/"
 ) => {
   try {
     const imageData = await fs.readFile(imagePath);
@@ -21,30 +31,16 @@ const generateSummaryForImage = async (
         {
           type: "text",
           text: `
-       Analyze the climate change image and generate two complementary components for vector search optimization:
+          Analyze the climate change image and generate a concise summary optimized for semantic search. The summary should:
 
-1. Summary Component:
-- Create a concise, scientifically precise summary of the image's content
-- Integrate key scientific terminology naturally
-- Provide contextual insights into the climate change information
+          1. Provide a scientifically precise and concise description of the image's content.
+          2. Use relevant scientific terminology naturally to enhance discoverability in vector search.
+          3. Highlight key contextual insights related to climate change, ensuring that the summary reflects the image's core message.
 
-2. Question Generation Component:
-- Develop a diverse set of 10-15 potential questions that could be asked about the image
-- Cover a range of depths and perspectives:
-  * Basic comprehension questions
-  * Advanced scientific inquiry questions
-  * Policy and impact-related questions
-  * Technical and methodological questions
+         Ensure the summary is comprehensive and informative, making it suitable for matching a wide range of semantic search queries. However, avoid verbosity and keep the summary cohesive.
 
-Ensure the questions:
-- Are directly relevant to the image's content
-- Span different levels of scientific expertise
-- Could potentially match user search queries
-- Provide multiple entry points for semantic search
+          JUST RETURN THE SUMMARY AND NOTHING ELSE.
 
-The goal is to create a comprehensive, search-optimized textual representation that allows multiple pathways for discovery and ranking in vector search, enhancing the image's discoverability across various user queries about climate change.
-
-JUST RETURN THE SUMMARY AND THE QUESTIONS AND NOTHING ELSE.
 `,
         },
         {
@@ -61,11 +57,15 @@ JUST RETURN THE SUMMARY AND THE QUESTIONS AND NOTHING ELSE.
     console.log("summary ", imagePath, res.content.slice(1, 50));
 
     return {
-      pageContent: res.content,
-      metadata: {
-        img: `${baseUrl}${imageName}`,
-        type: "image",
-      },
+      content: res.content,
+      token_count: getTokenCount(res.content as string),
+      report_name: "",
+      report_url: "",
+      type: "image",
+      img: `${baseUrl}${imageName}`,
+      source: "",
+      source_img: "",
+      embedding: await embed.embedQuery(res.content as string),
     };
   } catch (error) {
     console.error(`Error processing image ${imageName}:`, error);
@@ -73,7 +73,7 @@ JUST RETURN THE SUMMARY AND THE QUESTIONS AND NOTHING ELSE.
   }
 };
 
-const processDirectory = async (directory: string, baseUrl: string) => {
+const processDirectory = async (directory: string) => {
   try {
     const files = await fs.readdir(directory);
     const pngFiles = files.filter((file) => file.endsWith(".png"));
@@ -83,7 +83,7 @@ const processDirectory = async (directory: string, baseUrl: string) => {
     const summaries = await Promise.all(
       pngFiles.map((file) => {
         const filePath = path.join(directory, file);
-        return generateSummaryForImage(filePath, file, baseUrl);
+        return generateSummaryForImage(filePath, file);
       })
     );
 
@@ -96,11 +96,11 @@ const processDirectory = async (directory: string, baseUrl: string) => {
   }
 };
 
-const [directory, baseUrl] = process.argv.slice(2);
+const [directory] = process.argv.slice(2);
 
-if (!directory || !baseUrl) {
+if (!directory) {
   console.error("Usage: node script.js <directory> <base-url>");
   process.exit(1);
 }
 
-processDirectory(directory, baseUrl);
+processDirectory(directory);
