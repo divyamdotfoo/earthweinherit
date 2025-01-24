@@ -4,8 +4,8 @@ import { CSSProperties, HTMLAttributeAnchorTarget } from "react";
 
 export function Navbar() {
   return (
-    <div className=" px-6 pt-8 pb-3 font-secondary sticky top-0 z-50 bg-background selection:bg-white">
-      <div className="relative flex items-start md:items-center flex-col gap-2 md:gap-0 md:flex-row justify-between w-full max-w-screen-xxl mx-auto">
+    <div className="pt-6 md:pt-8 w-full pb-3 font-secondary lg:sticky lg:top-0 z-50 bg-background selection:bg-white">
+      <div className=" max-w-screen-xxl mx-auto relative flex items-start md:items-center flex-col gap-2 md:gap-0 md:flex-row justify-between w-full px-4">
         <div className=" absolute -top-3 h-[1px] bg-foreground animate-fillWidth"></div>
         <Link href={"/"}>
           <h1 className=" text-xl font-extrabold">Earth we Inherit</h1>

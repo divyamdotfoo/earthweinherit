@@ -43,24 +43,27 @@
   }
 }
 
-@keyframes scroll {
-  0% {
-    transform: translateX(0);
-  }
-  100% {
-    transform: translateX(-70%);
+@keyframes scrollMd {
+  to {
+    transform: translateX(-90%);
   }
 }
 
-@media (max-width: 768px) {
-  .animate-scroll {
-    animation: scroll 8s linear infinite;
+@keyframes scrollSm {
+  to {
+    transform: translate(-400%);
   }
 }
 
-@media (min-width: 769px) {
+@media (max-width: 640px) {
   .animate-scroll {
-    animation: scroll 40s linear infinite;
+    animation: scrollSm 30s linear infinite;
+  }
+}
+
+@media (min-width: 640px) {
+  .animate-scroll {
+    animation: scrollMd 40s linear infinite;
   }
 }
 

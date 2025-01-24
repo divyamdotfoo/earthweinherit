@@ -52,6 +52,7 @@ export function CarbonTempSeaIce({
 }) {
   const [isVisible, setIsVisible] = useState(false);
   const [isHovering, setHovering] = useState(false);
+  const [showY, setShowY] = useState(true);
   const chartContainerRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -66,6 +67,10 @@ export function CarbonTempSeaIce({
       }
     );
 
+    if (window.innerWidth < 768) {
+      setShowY(false);
+    }
+
     if (chartContainerRef.current) {
       observer.observe(chartContainerRef.current);
     }
@@ -75,7 +80,7 @@ export function CarbonTempSeaIce({
 
   return (
     <div ref={chartContainerRef} className="">
-      <ChartContainer config={chartConfig} className="max-h-[400px] mx-auto">
+      <ChartContainer config={chartConfig} className="max-h-[400px] lg:mx-auto">
         <ComposedChart
           className="relative"
           accessibilityLayer
@@ -102,6 +107,7 @@ export function CarbonTempSeaIce({
             }}
           />
           <YAxis
+            hide={!showY}
             axisLine={true}
             tickMargin={15}
             type="number"
@@ -117,7 +123,7 @@ export function CarbonTempSeaIce({
               angle={-90}
               value={"DANGER"}
               dx={-20}
-              className=" fill-red-500 text-lg"
+              className=" fill-red-500 hidden md:block text-lg"
             />
           </YAxis>
 
@@ -138,7 +144,7 @@ export function CarbonTempSeaIce({
               }}
               defaultIndex={4}
               active={true}
-              wrapperClassName=" rounded-lg shadow-sm"
+              wrapperClassName="rounded-lg shadow-sm hidden md:block"
               formatter={(value, name) => [
                 Number(value).toFixed(1),
                 chartConfig[name].label,
@@ -221,8 +227,8 @@ function Explanation() {
     },
   ];
   return (
-    <div className=" max-w-2xl pl-12 mx-auto -translate-y-2">
-      <p className=" tracking-tighter xl:text-nowrap text-xs pb-4">
+    <div className=" max-w-2xl lg:pl-12 mx-auto -translate-y-2">
+      <p className=" md:tracking-tighter xl:text-nowrap text-xs pb-4">
         <strong>Note: </strong>All variables are normalized between{" "}
         <strong>0</strong> and <strong>10</strong>, showing a progression from
         low to high danger.
@@ -233,21 +239,24 @@ function Explanation() {
           <TableRow className=" p-0">
             <TableHead>Parameter</TableHead>
             <TableHead className=" lg:text-center text-green-500 font-medium">
-              Danger - 0
+              Danger-0
             </TableHead>
             <TableHead className=" lg:text-center text-red-500 font-medium">
-              Danger - 10
+              Danger-10
             </TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {info.map((item, idx) => (
             <TableRow key={item.variable}>
-              <TableCell style={{ color: item.color }} className=" font-bold">
+              <TableCell
+                style={{ color: item.color }}
+                className=" font-bold max-w-28 sm:max-w-full pr-4"
+              >
                 {item.variable}
               </TableCell>
-              <TableCell className=" lg:text-center">{item.safe}</TableCell>
-              <TableCell className=" lg:text-center">{item.danger}</TableCell>
+              <TableCell className=" text-center">{item.safe}</TableCell>
+              <TableCell className=" text-center">{item.danger}</TableCell>
             </TableRow>
           ))}
         </TableBody>
@@ -267,10 +276,13 @@ export function ChartContextInformation() {
     <div
       data-visible={isInView}
       ref={containerRef}
-      className="max-w-[480px] text-lg font-medium leading-relaxed pb-8"
+      className="max-w-[480px] sm:text-lg font-medium leading-relaxed pb-8"
     >
       <p
-        className={cn("opacity-0", isInView && "animate-fadeIn")}
+        className={cn(
+          "opacity-0 inline xl:block pr-2 xl:pr-0",
+          isInView && "animate-fadeIn"
+        )}
         style={{
           animationDelay: "100ms",
         }}
@@ -278,7 +290,10 @@ export function ChartContextInformation() {
         The average global temperature has increased
       </p>
       <p
-        className={cn("opacity-0", isInView && "animate-fadeIn")}
+        className={cn(
+          "opacity-0 inline xl:block pr-2 xl:pr-0",
+          isInView && "animate-fadeIn"
+        )}
         style={{
           animationDelay: "200ms",
         }}
@@ -287,7 +302,10 @@ export function ChartContextInformation() {
         pre-industrial era
       </p>
       <p
-        className={cn("opacity-0", isInView && "animate-fadeIn")}
+        className={cn(
+          "opacity-0 inline xl:block pr-2 xl:pr-0",
+          isInView && "animate-fadeIn"
+        )}
         style={{
           animationDelay: "300ms",
         }}
@@ -296,7 +314,10 @@ export function ChartContextInformation() {
         <span className="text-red-500">1970</span> than in
       </p>
       <p
-        className={cn("opacity-0", isInView && "animate-fadeIn")}
+        className={cn(
+          "opacity-0 inline xl:block pr-2 xl:pr-0",
+          isInView && "animate-fadeIn"
+        )}
         style={{
           animationDelay: "400ms",
         }}
@@ -304,7 +325,10 @@ export function ChartContextInformation() {
         any other 50-year period over at least the
       </p>
       <p
-        className={cn("opacity-0", isInView && "animate-fadeIn")}
+        className={cn(
+          "opacity-0 inline xl:block pr-2 xl:pr-0",
+          isInView && "animate-fadeIn"
+        )}
         style={{
           animationDelay: "500ms",
         }}
@@ -315,7 +339,10 @@ export function ChartContextInformation() {
         </Underline>
       </p>
       <p
-        className={cn("opacity-0", isInView && "animate-fadeIn")}
+        className={cn(
+          "opacity-0 inline xl:block pr-2 xl:pr-0",
+          isInView && "animate-fadeIn"
+        )}
         style={{
           animationDelay: "600ms",
         }}
@@ -325,7 +352,10 @@ export function ChartContextInformation() {
         </Underline>
       </p>
       <p
-        className={cn("opacity-0", isInView && "animate-fadeIn")}
+        className={cn(
+          "opacity-0 inline xl:block pr-2 xl:pr-0",
+          isInView && "animate-fadeIn"
+        )}
         style={{
           animationDelay: "700ms",
         }}
@@ -335,7 +365,10 @@ export function ChartContextInformation() {
         </Underline>
       </p>
       <p
-        className={cn("opacity-0", isInView && "animate-fadeIn")}
+        className={cn(
+          "opacity-0 inline xl:block pr-2 xl:pr-0",
+          isInView && "animate-fadeIn"
+        )}
         style={{
           animationDelay: "800ms",
         }}
@@ -346,7 +379,10 @@ export function ChartContextInformation() {
         Under current warming trends,
       </p>
       <p
-        className={cn("opacity-0", isInView && "animate-fadeIn")}
+        className={cn(
+          "opacity-0 inline xl:block pr-2 xl:pr-0",
+          isInView && "animate-fadeIn"
+        )}
         style={{
           animationDelay: "900ms",
         }}
@@ -355,7 +391,10 @@ export function ChartContextInformation() {
         vanish by
       </p>
       <p
-        className={cn("opacity-0", isInView && "animate-fadeIn")}
+        className={cn(
+          "opacity-0 inline xl:block pr-2 xl:pr-0",
+          isInView && "animate-fadeIn"
+        )}
         style={{
           animationDelay: "1000ms",
         }}
@@ -363,7 +402,10 @@ export function ChartContextInformation() {
         2100. Even if the world follows a low
       </p>
       <p
-        className={cn("opacity-0", isInView && "animate-fadeIn")}
+        className={cn(
+          "opacity-0 inline xl:block pr-2 xl:pr-0",
+          isInView && "animate-fadeIn"
+        )}
         style={{
           animationDelay: "1100ms",
         }}
