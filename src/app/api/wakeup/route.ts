@@ -1,9 +1,6 @@
-import { Database } from "@/supabase/types";
-import { createClient } from "@supabase/supabase-js";
+import { supa } from "@/supabase/db";
 import { NextResponse } from "next/server";
 import { headers } from "next/headers";
-
-// My first response from the chatbot gets cut off in the middle every time, maybe this cron will fix it
 
 export async function GET() {
   const store = await headers();
@@ -11,12 +8,24 @@ export async function GET() {
   if (!secret || secret !== process.env.SECRET!)
     return NextResponse.json({}, { status: 500 });
 
-  const supa = createClient<Database>(
-    process.env.SUPABASE_URL!,
-    process.env.SUPABASE_KEY!
-  );
+  const randomIds: number[] = [];
 
-  await supa.from("page").select("*").limit(100);
+  for (let i = 0; i < 5; i++) {
+    randomIds.push(Math.floor(Math.random() * (5000 - 100 + 1)) + 100);
+  }
 
-  return NextResponse.json({}, { status: 200 });
+  const { data, error } = await supa
+    .from("page")
+    .select("id")
+    .in("id", randomIds);
+
+  if (error) {
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+
+  console.log(data);
+
+  const ids = data?.map((row) => row.id) || [];
+
+  return NextResponse.json({ cron: "successfull", ids }, { status: 200 });
 }
