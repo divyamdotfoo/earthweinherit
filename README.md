@@ -1,8 +1,10 @@
 **Clear, evidence-backed answers to all your climate change questions.**
 
-earthweinherit is a RAG-powered Q&A application that lets you ask anything about climate change and get responses grounded in scientific reports from IPCC, UNEP, and other authoritative sources — not hallucinations. Every answer is traceable back to its source.
+Earthweinherit is a RAG-powered Q&A application that lets you ask anything about climate change and get responses grounded in scientific reports from IPCC, UNEP, and other authoritative sources — not hallucinations. Every answer is traceable back to its source.
 
----
+<p align="center">
+  <a href="https://www.youtube.com/watch?v=4Kf3YzN38Qo"><strong>Watch on YouTube →</strong></a>
+</p>
 
 ## Features
 
